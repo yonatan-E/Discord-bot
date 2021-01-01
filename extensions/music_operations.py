@@ -17,7 +17,7 @@ class music_operations(commands.Cog):
                 colour=discord.Colour.red()))
             return
 
-        elif [vc for vc in self.__bot.voice_clients if vc.guild == ctx.guild] != []:
+        elif [vc for vc in self.__bot.voice_clients if vc.guild == ctx.guild]:
             await ctx.send(embed=discord.Embed(
                 title='Couldn\'t complete join command',
                 description=f'{self.__bot.user.name} is already connected to another voice channel <:man_facepalming:794333151434113024>',

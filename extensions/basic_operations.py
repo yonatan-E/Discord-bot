@@ -34,7 +34,7 @@ class basic_operations(commands.Cog):
         if isinstance(error, commands.errors.BadArgument):
             await ctx.send(embed=discord.Embed(
                 title='Couldn\'t complete clear command',
-                description=f'{error.arguments} is not a number!',
+                description='Please enter a valid number <:man_facepalming:794333151434113024>',
                 colour=discord.Colour.red()))
 
     @commands.command(help='Get info about the bot.')

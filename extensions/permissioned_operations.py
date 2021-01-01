@@ -15,19 +15,19 @@ class permissioned_operations(commands.Cog):
 
     @commands.command(help='Kick a member from the server.\nUsage: $kick @<user_name>')
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, member: discord.Member, *, reason=None):
+    async def kick(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.mention == member.mention:
-            await ctx.send(f'{member.mention}, you can\'t kick yourself!')
+            await ctx.send(f'{member.name}, you can\'t kick yourself!')
             return
 
-        await ctx.guild.ban(user=member, reason=reason)
+        await ctx.guild.kick(user=member, reason=reason)
         await ctx.send(embed=discord.Embed(
-            title=f'Member {member.mention} was kicked because of {reason}',
+            title=f'Member {member.name} was kicked because of {reason}',
             colour=discord.Colour.red()))
 
     @commands.command(help='Ban a member from the server.\nUsage: $ban @<user_name>')
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, member: discord.Member, *, reason=None):
+    async def ban(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.mention == member.mention:
             await ctx.send(embed=discord.Embed(
                 title=f'{member.name}, you can\'t ban yourself!',
@@ -36,7 +36,7 @@ class permissioned_operations(commands.Cog):
 
         await ctx.guild.ban(user=member, reason=reason)
         await ctx.send(embed=discord.Embed(
-            title=f'Member {member.mention} was banned because of {reason}',
+            title=f'Member {member.name} was banned because of {reason}',
             colour=discord.Colour.red()))
         
 
@@ -53,7 +53,7 @@ class permissioned_operations(commands.Cog):
             if (user.name, user.discriminator) == (member_name, member_discriminator):
                 await ctx.guild.unban(user)
                 await ctx.send(embed=discord.Embed(
-                    title=f'Member {user.mention} was unbanned',
+                    title=f'Member {user.name} was unbanned',
                     colour=discord.Colour.green()))
                 return
 
