@@ -1,23 +1,20 @@
 import discord
 from discord.ext import commands
 
+from util.error_handling import send_command_error_message
+
 class permissioned_operations(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
 
-    async def cog_command_error(self, ctx, error):
-        #await ctx.message.delete()
-        await ctx.send(embed=discord.Embed(
-            title=f'Couldn\'t complete {ctx.command} command',
-            description=str(error),
-            colour=discord.Colour.red()))
+        permissioned_operations.cog_command_error = lambda self, ctx, error: send_command_error_message(ctx, str(error))
 
     @commands.command(help='Kick a member from the server.\nUsage: $kick @<user_name>')
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.mention == member.mention:
-            await ctx.send(f'{member.name}, you can\'t kick yourself!')
+            await ctx.send(f'{member.name}, you can\'t kick yourself.')
             return
 
         await ctx.guild.kick(user=member, reason=reason)

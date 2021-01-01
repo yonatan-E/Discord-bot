@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from util.error_handling import send_command_error_message
+
 class basic_operations(commands.Cog):
 
     def __init__(self, bot):
@@ -25,17 +27,16 @@ class basic_operations(commands.Cog):
     async def on_server_join(self, guild):
         await guild.owner.send(f'Im ready!')
 
-    @commands.command(help='Clear the last messages from the chat.\nUsage: $clear <number_of_messages>')
-    async def clear(self, ctx, amount: int):
+    @commands.command(help='Delete the last messages from the chat.\nUsage: $delete <number_of_messages>')
+    async def delete(self, ctx, amount: int):
         await ctx.channel.purge(limit=amount)
 
-    @clear.error
-    async def clear_error(self, ctx, error):
+    @delete.error
+    async def delete_error(self, ctx, error):
         if isinstance(error, commands.errors.BadArgument):
-            await ctx.send(embed=discord.Embed(
-                title='Couldn\'t complete clear command',
-                description='Please enter a valid number <:man_facepalming:794333151434113024>',
-                colour=discord.Colour.red()))
+            await send_command_error_message(ctx, 'Please enter a valid number.')
+        else:
+            await send_command_error_message(ctx, str(error))
 
     @commands.command(help='Get info about the bot.')
     async def info(self, ctx):

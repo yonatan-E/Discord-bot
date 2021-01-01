@@ -2,8 +2,7 @@ import discord
 from discord.ext import commands
 
 import os
-
-TOKEN = 'NzkzOTE2MzY0ODA4OTEyOTQ3.X-zOOw._kfipXmWQV5j38uf3WIDETvTFZM'
+import sys
 
 class discord_bot(commands.Bot):
 
@@ -20,4 +19,4 @@ class discord_bot(commands.Bot):
 
 if __name__ == '__main__':
     bot = discord_bot()
-    bot.run(TOKEN)
+    bot.run(sys.argv[1])
