@@ -16,7 +16,7 @@ class music_queue(list):
 
     @property
     def index(self):
-        return self.__current
+        return self.__index
 
     @index.setter
     def index(self, val):
