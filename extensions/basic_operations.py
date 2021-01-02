@@ -10,22 +10,30 @@ class basic_operations(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.__bot.change_presence(activity=discord.Game('JontiBot'))
+        #await self.__bot.change_presence(activity=discord.Game('JontiBot'))
 
         for guild in self.__bot.guilds:
             for channel in guild.channels:
                 if isinstance(channel, discord.TextChannel):
                     await channel.send(embed=discord.Embed(
-                        title=f'{self.__bot.user.name} is working <:handshake:794249925248417802>',
+                        title=f'{self.__bot.user.name} is working <:beers:795025887737020436>',
                         colour=discord.Colour.blue()))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await member.send(f'Welcome, {member.mention}!')
+        for channel in guild.channels:
+            if isinstance(channel, discord.TextChannel):
+                await channel.send(embed=discord.Embed(
+                    title=f'Welcome {member.name} <:beers:795025887737020436>',
+                    colour=discord.Colour.blue()))
 
     @commands.Cog.listener()
     async def on_server_join(self, guild):
-        await guild.owner.send(f'Im ready!')
+        for channel in guild.channels:
+            if isinstance(channel, discord.TextChannel):
+                await channel.send(embed=discord.Embed(
+                    title=f'I\'m ready <:beers:795025887737020436>',
+                    colour=discord.Colour.blue()))
 
     @commands.command(help='Delete the last messages from the chat.\nUsage: $delete <number_of_messages>')
     async def delete(self, ctx, amount: int):

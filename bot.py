@@ -11,7 +11,7 @@ class discord_bot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix='$', help_command=None)
 
-        # loading the cogs
+        # load the extensions
         for file_name in os.listdir('./extensions'):
             if file_name.endswith('.py'):
                 super().load_extension(f'extensions.{file_name[:-3]}')
