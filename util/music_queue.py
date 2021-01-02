@@ -15,14 +15,14 @@ class music_queue(list):
             raise IndexError
 
         self.__current += 1
-        return self[self.__current - 1], self.__song_urls[self[self.__current - 1]]
+        return self.__song_urls[self[self.__current - 1]]
     
     def prev(self):
         if self.__current < 0:
             raise IndexError
     
         self.__current -= 1
-        return self[self.__current - 1], self.__song_urls[self[self.__current + 1]]
+        return self.__song_urls[self[self.__current + 1]]
 
     def reset(self):
         self.__current = 0
