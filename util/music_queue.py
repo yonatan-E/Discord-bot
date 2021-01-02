@@ -28,8 +28,5 @@ class music_queue(list):
     def dec(self, val):
         self.__index -= val
 
-    def has_next(self):
-        return self.__index < len(self)
-
-    def has_prev(self):
-        return self.__index >= 0
+    def in_range(self):
+        return self.__index >= 0 and self.__index < len(self)

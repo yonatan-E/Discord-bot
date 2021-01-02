@@ -50,7 +50,7 @@ class music_operations(commands.Cog):
     
     def play_next(self, voice_client):
         song_queue = self.__server_queues[voice_client.guild.id]
-        if song_queue.has_next():
+        if song_queue.in_range():
             url = song_queue.url
             song_queue.inc(1)
             voice_client.play(discord.FFmpegPCMAudio(url), after=lambda e: self.play_next(voice_client))
@@ -121,8 +121,10 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['n', 'N'])
     async def next(self, ctx):
-        if not self.__server_queues[ctx.guild.id].has_next():
+        if not self.__server_queues[ctx.guild.id].in_range():
             await send_command_error_message(ctx, 'There isn\'t a next song.')
+            
+            return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
@@ -135,8 +137,11 @@ class music_operations(commands.Cog):
     async def prev(self, ctx):
         self.__server_queues[ctx.guild.id].dec(2)
 
-        if not self.__server_queues[ctx.guild.id].has_prev():
+        if not self.__server_queues[ctx.guild.id].in_range():
             await send_command_error_message(ctx, 'There isn\'t a prev song.')
+
+            self.__server_queues[ctx.guild.id].dec(2)
+            return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
