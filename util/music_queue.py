@@ -3,30 +3,33 @@ class music_queue(list):
     def __init__(self):
         super().__init__()
 
-        self.__song_urls = {}
-        self.__current = 0
+        self.__song_urls = []
+        self.__index = 0
 
     def __setitem__(self, title, url):
-        super().append(title)
-        self.__song_urls[title] = url
-    
-    def next(self):
-        if self.__current >= len(self):
-            raise IndexError
-
-        self.__current += 1
-        return self.__song_urls[self[self.__current - 1]]
-    
-    def prev(self):
-        if self.__current < 0:
-            raise IndexError
-    
-        self.__current -= 1
-        return self.__song_urls[self[self.__current + 1]]
-
-    def reset(self):
-        self.__current = 0
+        self.append(title)
+        self.__song_urls.append(url)
 
     @property
-    def current(self):
+    def url(self):
+        return self.__song_urls[self.__index]
+
+    @property
+    def index(self):
         return self.__current
+
+    @index.setter
+    def index(self, val):
+        self.__index = val
+
+    def inc(self, val):
+        self.__index += val
+
+    def dec(self, val):
+        self.__index -= val
+
+    def has_next(self):
+        return self.__index < len(self)
+
+    def has_prev(self):
+        return self.__index >= 0

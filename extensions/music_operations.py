@@ -37,7 +37,7 @@ class music_operations(commands.Cog):
                 if ctx.guild.id not in self.__server_queues:
                     self.__server_queues[ctx.guild.id] = music_queue()
                 else:
-                    self.__server_queues[ctx.guild.id].reset()
+                    self.__server_queues[ctx.guild.id].index = 0
 
     @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.')
     async def leave(self, ctx):
@@ -49,12 +49,11 @@ class music_operations(commands.Cog):
             await send_command_error_message(ctx, f'Please join {self.__bot.user.name} to a voice channel before making it leave one.')
     
     def play_next(self, voice_client):
-        try:
-            print(5)
-            url = self.__server_queues[voice_client.guild.id].next()
+        song_queue = self.__server_queues[voice_client.guild.id]
+        if song_queue.has_next():
+            url = song_queue.url
+            song_queue.inc(1)
             voice_client.play(discord.FFmpegPCMAudio(url), after=lambda e: self.play_next(voice_client))
-        except IndexError:
-            pass
 
     @commands.command(aliases=['p', 'P'])
     async def play(self, ctx, *, name):
@@ -122,9 +121,7 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['n', 'N'])
     async def next(self, ctx):
-        try:
-            self.__server_queues[ctx.guild.id].next()
-        except:
+        if not self.__server_queues[ctx.guild.id].has_next():
             await send_command_error_message(ctx, 'There isn\'t a next song.')
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
@@ -132,14 +129,13 @@ class music_operations(commands.Cog):
         if not bot_voice_client:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
         elif bot_voice_client.is_playing():
-            self.__server_queues[ctx.guild.id].prev()
             bot_voice_client.stop()
 
     @commands.command()
     async def prev(self, ctx):
-        try:
-            prev_song_url = self.__server_queues[ctx.guild.id].prev()
-        except IndexError:
+        self.__server_queues[ctx.guild.id].dec(2)
+
+        if not self.__server_queues[ctx.guild.id].has_prev():
             await send_command_error_message(ctx, 'There isn\'t a prev song.')
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
@@ -167,7 +163,7 @@ class music_operations(commands.Cog):
         for i in range(0, len(self.__server_queues[ctx.guild.id])):
             description += f'**{i + 1}.** {self.__server_queues[ctx.guild.id][i]}'
 
-            if i == self.__server_queues[ctx.guild.id].current + 1 and bot_voice_client and bot_voice_client.is_connected():
+            if i == self.__server_queues[ctx.guild.id].index + 1 and bot_voice_client and bot_voice_client.is_connected():
                 description += ' - **current**'
             description += '\n'
 

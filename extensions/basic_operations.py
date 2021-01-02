@@ -8,16 +8,16 @@ class basic_operations(commands.Cog):
     def __init__(self, bot):
         self.__bot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self):
+    #@commands.Cog.listener()
+    #async def on_ready(self):
         #await self.__bot.change_presence(activity=discord.Game('JontiBot'))
 
-        for guild in self.__bot.guilds:
-            for channel in guild.channels:
-                if isinstance(channel, discord.TextChannel):
-                    await channel.send(embed=discord.Embed(
-                        title=f'{self.__bot.user.name} is working <:beers:795025887737020436>',
-                        colour=discord.Colour.blue()))
+    #    for guild in self.__bot.guilds:
+    #        for channel in guild.channels:
+    #            if isinstance(channel, discord.TextChannel):
+    #                await channel.send(embed=discord.Embed(
+    #                    title=f'{self.__bot.user.name} is working <:beers:795025887737020436>',
+    #                    colour=discord.Colour.blue()))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
