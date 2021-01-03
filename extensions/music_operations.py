@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.utils import get
 
 import youtube_dl
+import asyncio
 
 from util.error_handling import send_command_error_message
 from util.music_queue import music_queue
@@ -48,15 +49,16 @@ class music_operations(commands.Cog):
         else:
             await send_command_error_message(ctx, f'Please join {self.__bot.user.name} to a voice channel before making it leave one.')
     
-    def play_next(self, voice_client):
-        song_queue = self.__server_queues[voice_client.guild.id]
+    async def play_next(self, voice_client):
+        song_queue = self.__server_queues[ctx.guild.id]
         
         try:
-            voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
+            bot_voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
         except:
             pass
 
-        song_queue.index += 1
+        if song_queue.index in range(0, len(song_queue)):
+            song_queue.index += 1
 
     @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
     async def play(self, ctx, *, name):
@@ -77,7 +79,15 @@ class music_operations(commands.Cog):
             song_queue[title] = url
     
         if not bot_voice_client.is_playing():
+            await ctx.send(embed=discord.Embed(
+                title=f'Playing {song_queue.title}',
+                colour=discord.Colour.blue()))
+            
             self.play_next(bot_voice_client)
+        else:
+            await ctx.send(embed=discord.Embed(
+                title=f'Queued {song_queue.title}',
+                colour=discord.Colour.blue()))
 
     @play.error
     async def play_error(self, ctx, error):
@@ -93,7 +103,12 @@ class music_operations(commands.Cog):
             
             if bot_voice_client.is_paused():
                 bot_voice_client.resume()
+            
             elif not bot_voice_client.is_playing():
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
+
                 self.play_next(bot_voice_client)
 
     @commands.command(aliases=['PAUSE'], help='Pause the played song.\nUsage: **$pause**')
@@ -143,6 +158,10 @@ class music_operations(commands.Cog):
             if not song_queue.index in range(0, len(song_queue)):
                 await send_command_error_message(ctx, 'There isn\'t a next song.')
             else:
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
+                
                 bot_voice_client.stop()
 
     @commands.command(aliases=['PREV'], help='Play the prev song from the queue.\nUsage: **$prev**')
@@ -163,6 +182,10 @@ class music_operations(commands.Cog):
                 await send_command_error_message(ctx, 'There isn\'t a prev song.')
             else:
                 song_queue.index -= 2
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
+                
                 bot_voice_client.stop()
 
     @commands.command(aliases=['JUMP'], help='Play the song in the specified place in the queue.\nUsage: **$jump <place_in_queue>** or **$jump**')
@@ -183,6 +206,10 @@ class music_operations(commands.Cog):
                 await send_command_error_message(ctx, 'There specified place is not in the queue.')
             else:
                 song_queue.index = place - 1
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
+                
                 bot_voice_client.stop()
 
     @jump.error
@@ -237,7 +264,7 @@ class music_operations(commands.Cog):
         description = ''
         for i in range(0, len(song_queue)):
             description += f'**{i + 1}.** {song_queue[i]}'
-            if i == song_queue.index - 1 and bot_voice_client and bot_voice_client.is_connected():
+            if i == song_queue.index - 1 and bot_voice_client and (bot_voice_client.is_playing() or bot_voice_client.is_paused()):
                 description += ' - **current**'
             description += '\n'
 
