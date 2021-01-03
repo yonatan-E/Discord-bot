@@ -105,6 +105,7 @@ class music_operations(commands.Cog):
                 bot_voice_client.resume()
             
             elif not bot_voice_client.is_playing():
+                song_queue = self.__server_queues[ctx.guild.id]
                 await ctx.send(embed=discord.Embed(
                     title=f'Playing {song_queue.title}',
                     colour=discord.Colour.blue()))
