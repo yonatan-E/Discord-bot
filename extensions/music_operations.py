@@ -49,7 +49,7 @@ class music_operations(commands.Cog):
         else:
             await send_command_error_message(ctx, f'Please join {self.__bot.user.name} to a voice channel before making it leave one.')
     
-    async def play_next(self, voice_client):
+    def play_next(self, voice_client):
         song_queue = self.__server_queues[ctx.guild.id]
         
         try:
