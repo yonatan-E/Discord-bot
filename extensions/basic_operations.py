@@ -50,7 +50,7 @@ class basic_operations(commands.Cog):
     async def info(self, ctx):
         await ctx.send(embed=discord.Embed(
             title=f'{self.__bot.user.name} info',
-            description=f'The bot version is {self.__bot.VERSION}.\nThe bot was developed by JONTI.',
+            description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by JONTI.**',
             colour=discord.Colour.blue()))
 
     @commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
