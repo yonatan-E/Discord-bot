@@ -12,7 +12,4 @@ class music_queue(list):
 
     @property
     def url(self):
-        return self.__song_urls[self.__index]
-
-    def range(self):
-        return range(0, len(self))
+        return self.__song_urls[self.index]

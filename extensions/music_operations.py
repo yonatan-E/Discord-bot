@@ -50,27 +50,32 @@ class music_operations(commands.Cog):
     
     def play_next(self, voice_client):
         song_queue = self.__server_queues[voice_client.guild.id]
-
-        if song_queue.index in song_queue.range():
-            url = song_queue.url
+        
+        try:
+            voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
             song_queue.index += 1
-            voice_client.play(discord.FFmpegPCMAudio(url), after=lambda e: self.play_next(voice_client))
+        except:
+            pass
 
     @commands.command(aliases=['p', 'P'])
     async def play(self, ctx, *, name):
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
-        song_queue = self.__server_queues[voice_client.guild.id]
-
+    
         if not bot_voice_client:
             await self.join(ctx)
             bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
+            if not bot_voice_client:
+                return
+    
         title, url = self.__yt_searcher.search(name)
+
+        song_queue = self.__server_queues[ctx.guild.id]
 
         if title not in song_queue:
             song_queue[title] = url
-        
-        if bot_voice_client.is_connected() and not bot_voice_client.is_playing():
+    
+        if not bot_voice_client.is_playing():
             self.play_next(bot_voice_client)
 
     @play.error
@@ -81,86 +86,113 @@ class music_operations(commands.Cog):
             if not bot_voice_client:
                 await self.join(ctx)
                 bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+
+                if not bot_voice_client:
+                    return
             
-            if bot_voice_client.is_connected():
-                if bot_voice_client.is_paused():
-                    bot_voice_client.resume()
-                elif not bot_voice_client.is_playing():
-                    self.play_next(bot_voice_client)
+            if bot_voice_client.is_paused():
+                bot_voice_client.resume()
+            elif not bot_voice_client.is_playing():
+                self.play_next(bot_voice_client)
 
     @commands.command()
     async def pause(self, ctx):
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            return
+
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-        if bot_voice_client and bot_voice_client.is_playing():
-            bot_voice_client.pause()
-        elif not bot_voice_client:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-        else:
+        if not bot_voice_client:
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+        elif not bot_voice_client.is_playing():
             await send_command_error_message(ctx, 'Currently there isn\'t a played song to pause.')
+        else:
+            bot_voice_client.pause()
 
     @commands.command()
     async def resume(self, ctx):
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            return
+
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-        if bot_voice_client and bot_voice_client.is_paused():
-            bot_voice_client.resume()
-        elif not bot_voice_client:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-        else:
+        if not bot_voice_client:
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+        elif not bot_voice_client.is_paused():
             await send_command_error_message(ctx, 'Currently there isn\'t a paused song to resume.')
+        else:
+            bot_voice_client.resume()
 
     @commands.command()
     async def stop(self, ctx):
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            return
+
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-        if bot_voice_client and bot_voice_client.is_playing():
-            bot_voice_client.stop()
-        elif not bot_voice_client:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-        else:
+        if not bot_voice_client:
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+        elif not bot_voice_client.is_connected():
             await send_command_error_message(ctx, 'Currently there isn\'t a played song to stop.')
+        else:
+            bot_voice_client.stop()
 
     @commands.command(aliases=['n', 'N'])
     async def next(self, ctx):
-        song_queue = self.__server_queues[ctx.guild.id]
-
-        if not song_queue.index in song_queue.range():
-            await send_command_error_message(ctx, 'There isn\'t a next song.')
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
             return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
         if not bot_voice_client:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-        elif bot_voice_client.is_playing():
-            bot_voice_client.stop()
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+
+        elif bot_voice_client.is_connected():
+            song_queue = self.__server_queues[ctx.guild.id]
+
+            if not song_queue.index in range(0, len(song_queue)):
+                await send_command_error_message(ctx, 'There isn\'t a next song.')
+            else:
+                bot_voice_client.stop()
 
     @commands.command()
     async def prev(self, ctx):
-        song_queue = self.__server_queues[ctx.guild.id]
-
-        if not song_queue.index - 2 in song_queue.range():
-            await send_command_error_message(ctx, 'There isn\'t a prev song.')
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
             return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
         if not bot_voice_client:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-        elif bot_voice_client.is_playing():
-            song_queue.index -= 2
-            bot_voice_client.stop()
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+
+        elif bot_voice_client.is_connected():
+            song_queue = self.__server_queues[ctx.guild.id]
+
+            if not song_queue.index - 2 in range(0, len(song_queue)):
+                await send_command_error_message(ctx, 'There isn\'t a prev song.')
+            else:
+                song_queue.index -= 2
+                bot_voice_client.stop()
 
     @commands.command()
     async def clear(self, ctx):
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            return
+
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-        if bot_voice_client and bot_voice_client.connected():
+        if not bot_voice_client:
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+
+        elif bot_voice_client.is_connected():
             bot_voice_client.stop()
             self.__server_queues[ctx.guild.id] = music_queue()
-        else:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
 
     @commands.command()
     async def queue(self, ctx):
