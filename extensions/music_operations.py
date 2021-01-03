@@ -179,10 +179,10 @@ class music_operations(commands.Cog):
         elif bot_voice_client.is_connected():
             song_queue = self.__server_queues[ctx.guild.id]
 
-            if not place in range(0, len(song_queue)):
+            if not place - 1 in range(0, len(song_queue)):
                 await send_command_error_message(ctx, 'There specified place is not in the queue.')
             else:
-                song_queue.index = place
+                song_queue.index = place - 1
                 bot_voice_client.stop()
 
     @jump.error
@@ -191,7 +191,9 @@ class music_operations(commands.Cog):
             await send_command_error_message(ctx, 'Please enter a valid number.')
         
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            song_queue.index = len(self.__server_queues[ctx.guild.id]) - 1
+            song_queue = self.__server_queues[ctx.guild.id]
+            song_queue.index = len(song_queue) - 1
+            
             bot_voice_client.stop()
 
     @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
