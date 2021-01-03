@@ -16,7 +16,7 @@ class music_operations(commands.Cog):
         self.__server_queues = {}
         self.__yt_searcher = yt_searcher()
 
-    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel.')
+    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel. Usage: **$join**')
     async def join(self, ctx):
         member_voice_status = ctx.author.voice
 
@@ -39,7 +39,7 @@ class music_operations(commands.Cog):
                 else:
                     self.__server_queues[ctx.guild.id].index = 0
 
-    @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.')
+    @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.\nUsage: **$leave**')
     async def leave(self, ctx):
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
@@ -58,7 +58,7 @@ class music_operations(commands.Cog):
 
         song_queue.index += 1
 
-    @commands.command(aliases=['p', 'P'])
+    @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
     async def play(self, ctx, *, name):
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
     
@@ -96,7 +96,7 @@ class music_operations(commands.Cog):
             elif not bot_voice_client.is_playing():
                 self.play_next(bot_voice_client)
 
-    @commands.command()
+    @commands.command(aliases=['PAUSE'], help='Pause the played song.\nUsage: **$pause**')
     async def pause(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -111,7 +111,7 @@ class music_operations(commands.Cog):
         else:
             bot_voice_client.pause()
 
-    @commands.command()
+    @commands.command(aliases=['RESUME'], help='Resume the paused song.\nUsage: **$resume**')
     async def resume(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -126,7 +126,7 @@ class music_operations(commands.Cog):
         else:
             bot_voice_client.resume()
 
-    @commands.command(aliases=['n', 'N'])
+    @commands.command(aliases=['NEXT', 'n', 'N'], help='Play the next song from the queue.\nUsage: **$next**')
     async def next(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -145,7 +145,7 @@ class music_operations(commands.Cog):
             else:
                 bot_voice_client.stop()
 
-    @commands.command()
+    @commands.command(aliases=['PREV'], help='Play the prev song from the queue.\nUsage: **$prev**')
     async def prev(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -165,7 +165,7 @@ class music_operations(commands.Cog):
                 song_queue.index -= 2
                 bot_voice_client.stop()
 
-    @commands.command()
+    @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
     async def stop(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -182,13 +182,13 @@ class music_operations(commands.Cog):
 
             bot_voice_client.stop()
 
-    @commands.command()
+    @commands.command(aliases=['CLEAR'], help='Clear the queue\nUsage: **$clear**')
     async def clear(self, ctx):
         await self.stop()
 
         self.__server_queues[ctx.guild.id] = music_queue()
 
-    @commands.command()
+    @commands.command(aliases=['QUEUE'], help='Show the queue.\nUsage: **$queue**')
     async def queue(self, ctx):
         song_queue = self.__server_queues[ctx.guild.id]
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)

@@ -35,7 +35,7 @@ class basic_operations(commands.Cog):
                     title=f'I\'m ready <:beers:795025887737020436>',
                     colour=discord.Colour.blue()))
 
-    @commands.command(help='Delete the last messages from the chat.\nUsage: $delete <number_of_messages>')
+    @commands.command(help='Delete the last messages from the chat.\nUsage: **$delete <number_of_messages>**')
     async def delete(self, ctx, amount: int):
         await ctx.channel.purge(limit=amount)
 
@@ -46,14 +46,14 @@ class basic_operations(commands.Cog):
         else:
             await send_command_error_message(ctx, str(error))
 
-    @commands.command(help='Get info about the bot.')
+    @commands.command(aliases=['INFO'], help='Get info about the bot.\nUsage: **$info**')
     async def info(self, ctx):
         await ctx.send(embed=discord.Embed(
             title=f'{self.__bot.user.name} info',
             description=f'The bot version is {self.__bot.VERSION}.\nThe bot was developed by JONTI.',
             colour=discord.Colour.blue()))
 
-    @commands.command(help='Get right here.')
+    @commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
     async def help(self, ctx):
         embed = discord.Embed(
             title=f'{self.__bot.user.name} help',

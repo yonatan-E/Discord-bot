@@ -10,7 +10,7 @@ class permissioned_operations(commands.Cog):
 
         permissioned_operations.cog_command_error = lambda self, ctx, error: send_command_error_message(ctx, str(error))
 
-    @commands.command(help='Kick a member from the server.\nUsage: $kick @<user_name>')
+    @commands.command(aliases=['KICK'], help='Kick a member from the server.\nUsage: **$kick @<user_name>**')
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.mention == member.mention:
@@ -19,26 +19,26 @@ class permissioned_operations(commands.Cog):
 
         await ctx.guild.kick(user=member, reason=reason)
         await ctx.send(embed=discord.Embed(
-            title=f'Member {member.name} was kicked because of {reason}',
+            title=f'Member {member.name} was kicked because of {reason}.',
             colour=discord.Colour.red()))
 
-    @commands.command(help='Ban a member from the server.\nUsage: $ban @<user_name>')
+    @commands.command(aliases=['BAN'], help='Ban a member from the server.\nUsage: **$ban @<user_name>**')
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.mention == member.mention:
             await ctx.send(embed=discord.Embed(
-                title=f'{member.name}, you can\'t ban yourself!',
+                title=f'{member.name}, you can\'t ban yourself.',
                 colour=discord.Colour.red()))
             return
 
         await ctx.guild.ban(user=member, reason=reason)
         await ctx.send(embed=discord.Embed(
-            title=f'Member {member.name} was banned because of {reason}',
+            title=f'Member {member.name} was banned because of {reason}.',
             colour=discord.Colour.red()))
         
 
 
-    @commands.command(help='Unban a member from the server.\nUsage: $unben <user_name>#<user_descriminator>')
+    @commands.command(aliases=['UNBAN'], help='Unban a member from the server.\nUsage: **$unben <user_name>#<user_descriminator>**')
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member):
         banned_users = await ctx.guild.bans()
