@@ -86,7 +86,7 @@ class music_operations(commands.Cog):
                 title=f'Playing {title}',
                 colour=discord.Colour.blue()))
             
-            song_queue.index = song_queue.index(title)
+            song_queue.index = list.index(song_queue, title)
             self.play_next(bot_voice_client)
 
     @play.error
