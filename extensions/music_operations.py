@@ -36,8 +36,6 @@ class music_operations(commands.Cog):
 
                 if ctx.guild.id not in self.__server_queues:
                     self.__server_queues[ctx.guild.id] = music_queue()
-                else:
-                    self.__server_queues[ctx.guild.id].index = 0
 
     @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.\nUsage: **$leave**')
     async def leave(self, ctx):
@@ -58,6 +56,8 @@ class music_operations(commands.Cog):
 
         if song_queue.index in range(0, len(song_queue)):
             song_queue.index += 1
+        else:
+            song_queue.index = 0
 
     @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
     async def play(self, ctx, *, name):
@@ -77,7 +77,7 @@ class music_operations(commands.Cog):
         if title not in song_queue:
             song_queue[title] = url
     
-        if not bot_voice_client.is_playing():
+        if bot_voice_client.is_connected() and not bot_voice_client.is_playing():
             await ctx.send(embed=discord.Embed(
                 title=f'Playing {title}',
                 colour=discord.Colour.blue()))
