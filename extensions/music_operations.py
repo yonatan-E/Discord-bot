@@ -52,6 +52,7 @@ class music_operations(commands.Cog):
         song_queue = self.__server_queues[voice_client.guild.id]
         
         try:
+            print(song_queue.index)
             voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
             song_queue.index += 1
         except:

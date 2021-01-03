@@ -12,4 +12,7 @@ class music_queue(list):
 
     @property
     def url(self):
+        if self.index not in range(0, len(self)):
+            raise IndexError
+        
         return self.__song_urls[self.index]
