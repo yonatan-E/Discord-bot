@@ -67,7 +67,7 @@ class music_operations(commands.Cog):
             await self.join(ctx)
             bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-            if not bot_voice_client
+            if not bot_voice_client:
                 return
     
         title, url = self.__yt_searcher.search(name)
@@ -237,6 +237,10 @@ class music_operations(commands.Cog):
                 song_queue = self.__server_queues[ctx.guild.id]
 
                 song_queue.index = len(song_queue) - 1
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
+                
                 bot_voice_client.stop()
 
     @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
