@@ -252,6 +252,9 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['QUEUE'], help='Show the queue.\nUsage: **$queue**')
     async def queue(self, ctx):
+        if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
+            description = 'The queue is empty right now.'
+
         song_queue = self.__server_queues[ctx.guild.id]
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
@@ -261,9 +264,6 @@ class music_operations(commands.Cog):
             if i == song_queue.index - 1 and bot_voice_client and (bot_voice_client.is_playing() or bot_voice_client.is_paused()):
                 description += ' - **current**'
             description += '\n'
-
-        if not description:
-            description = 'The queue is empty right now.'
 
         await ctx.send(embed=discord.Embed(
             title=f'{self.__bot.user.name} queue',
