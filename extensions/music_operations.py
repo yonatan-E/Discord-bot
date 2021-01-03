@@ -105,11 +105,17 @@ class music_operations(commands.Cog):
             
             elif not bot_voice_client.is_playing():
                 song_queue = self.__server_queues[ctx.guild.id]
-                await ctx.send(embed=discord.Embed(
-                    title=f'Playing {song_queue.title}',
-                    colour=discord.Colour.blue()))
 
-                self.play_next(bot_voice_client)
+                if not song_queue:
+                    await ctx.send(embed=discord.Embed(
+                        title=f'{self.__bot.user.name} queue is empty.',
+                        colour=discord.Colour.blue()))
+                else:
+                    await ctx.send(embed=discord.Embed(
+                        title=f'Playing {song_queue.title}',
+                        colour=discord.Colour.blue()))
+
+                    self.play_next(bot_voice_client)
 
     @commands.command(aliases=['PAUSE'], help='Pause the played song.\nUsage: **$pause**')
     async def pause(self, ctx):
