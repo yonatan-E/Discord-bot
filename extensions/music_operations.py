@@ -50,14 +50,16 @@ class music_operations(commands.Cog):
     
     def play_next(self, voice_client):
         song_queue = self.__server_queues[voice_client.guild.id]
+
         if song_queue.index in song_queue.range():
             url = song_queue.url
-            song_queue.inc(1)
+            song_queue.index += 1
             voice_client.play(discord.FFmpegPCMAudio(url), after=lambda e: self.play_next(voice_client))
 
     @commands.command(aliases=['p', 'P'])
     async def play(self, ctx, *, name):
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+        song_queue = self.__server_queues[voice_client.guild.id]
 
         if not bot_voice_client:
             await self.join(ctx)
@@ -65,8 +67,8 @@ class music_operations(commands.Cog):
 
         title, url = self.__yt_searcher.search(name)
 
-        if title not in self.__server_queues[ctx.guild.id]:
-            self.__server_queues[ctx.guild.id][title] = url
+        if title not in song_queue:
+            song_queue[title] = url
         
         if bot_voice_client.is_connected() and not bot_voice_client.is_playing():
             self.play_next(bot_voice_client)
@@ -147,7 +149,7 @@ class music_operations(commands.Cog):
         if not bot_voice_client:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
         elif bot_voice_client.is_playing():
-            song_queue.dec(2)
+            song_queue.index -= 2
             bot_voice_client.stop()
 
     @commands.command()
