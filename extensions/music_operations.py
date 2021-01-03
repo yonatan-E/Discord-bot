@@ -50,7 +50,7 @@ class music_operations(commands.Cog):
     
     def play_next(self, voice_client):
         song_queue = self.__server_queues[voice_client.guild.id]
-        if song_queue.in_range():
+        if song_queue.index in song_queue.range():
             url = song_queue.url
             song_queue.inc(1)
             voice_client.play(discord.FFmpegPCMAudio(url), after=lambda e: self.play_next(voice_client))
@@ -121,9 +121,10 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['n', 'N'])
     async def next(self, ctx):
-        if not self.__server_queues[ctx.guild.id].in_range():
+        song_queue = self.__server_queues[ctx.guild.id]
+
+        if not song_queue.index in song_queue.range():
             await send_command_error_message(ctx, 'There isn\'t a next song.')
-            
             return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
@@ -135,12 +136,10 @@ class music_operations(commands.Cog):
 
     @commands.command()
     async def prev(self, ctx):
-        self.__server_queues[ctx.guild.id].dec(2)
+        song_queue = self.__server_queues[ctx.guild.id]
 
-        if not self.__server_queues[ctx.guild.id].in_range():
+        if not song_queue.index - 2 in song_queue.range():
             await send_command_error_message(ctx, 'There isn\'t a prev song.')
-
-            self.__server_queues[ctx.guild.id].dec(2)
             return
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
@@ -148,6 +147,7 @@ class music_operations(commands.Cog):
         if not bot_voice_client:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
         elif bot_voice_client.is_playing():
+            song_queue.dec(2)
             bot_voice_client.stop()
 
     @commands.command()
@@ -162,13 +162,14 @@ class music_operations(commands.Cog):
 
     @commands.command()
     async def queue(self, ctx):
+        song_queue = self.__server_queues[ctx.guild.id]
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
         description = ''
-        for i in range(0, len(self.__server_queues[ctx.guild.id])):
-            description += f'**{i + 1}.** {self.__server_queues[ctx.guild.id][i]}'
-
-            if i == self.__server_queues[ctx.guild.id].index + 1 and bot_voice_client and bot_voice_client.is_connected():
+        for i in range(0, len(song_queue)):
+            description += f'**{i + 1}.** {song_queue[i]}'
+            print(song_queue.index)
+            if i == song_queue.index and bot_voice_client and bot_voice_client.is_connected():
                 description += ' - **current**'
             description += '\n'
 
