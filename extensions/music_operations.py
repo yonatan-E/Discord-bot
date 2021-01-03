@@ -61,13 +61,6 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
     async def play(self, ctx, *, name):
-        title, url = self.__yt_searcher.search(name)
-
-        song_queue = self.__server_queues[ctx.guild.id]
-
-        if title not in song_queue:
-            song_queue[title] = url
-
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
     
         if not bot_voice_client:
@@ -76,6 +69,13 @@ class music_operations(commands.Cog):
 
             if not bot_voice_client:
                 return
+
+        title, url = self.__yt_searcher.search(name)
+
+        song_queue = self.__server_queues[ctx.guild.id]
+
+        if title not in song_queue:
+            song_queue[title] = url
         
         if bot_voice_client.is_playing() or bot_voice_client.is_paused():
             await ctx.send(embed=discord.Embed(
