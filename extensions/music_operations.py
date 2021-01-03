@@ -165,6 +165,35 @@ class music_operations(commands.Cog):
                 song_queue.index -= 2
                 bot_voice_client.stop()
 
+    @commands.command(aliases=['JUMP'], help='Play the song in the specified place in the queue.\nUsage: **$jump <place_in_queue>** or **$jump**')
+    async def jump(self, ctx, place: int):
+        if not ctx.author.voice:
+            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            return
+
+        bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+
+        if not bot_voice_client:
+            await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
+
+        elif bot_voice_client.is_connected():
+            song_queue = self.__server_queues[ctx.guild.id]
+
+            if not place in range(0, len(song_queue)):
+                await send_command_error_message(ctx, 'There specified place is not in the queue.')
+            else:
+                song_queue.index = place
+                bot_voice_client.stop()
+
+    @jump.error
+    async def jump_error(self, ctx, error):
+        if isinstance(error, commands.errors.BadArgument):
+            await send_command_error_message(ctx, 'Please enter a valid number.')
+        
+        elif isinstance(error, commands.errors.MissingRequiredArgument):
+            song_queue.index = len(self.__server_queues[ctx.guild.id]) - 1
+            bot_voice_client.stop()
+
     @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
     async def stop(self, ctx):
         if not ctx.author.voice:
