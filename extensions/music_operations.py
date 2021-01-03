@@ -76,18 +76,18 @@ class music_operations(commands.Cog):
 
         if title not in song_queue:
             song_queue[title] = url
-    
-        if not bot_voice_client.is_playing():
+        
+        if bot_voice_client.is_playing() or bot_voice_client.is_paused():
+            await ctx.send(embed=discord.Embed(
+                title=f'Queued {title}',
+                colour=discord.Colour.blue()))
+        else:
             await ctx.send(embed=discord.Embed(
                 title=f'Playing {title}',
                 colour=discord.Colour.blue()))
 
             song_queue.index = len(song_queue) - 1
             self.play_next(bot_voice_client)
-        else:
-            await ctx.send(embed=discord.Embed(
-                title=f'Queued {title}',
-                colour=discord.Colour.blue()))
 
     @play.error
     async def play_error(self, ctx, error):
