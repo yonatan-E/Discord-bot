@@ -224,24 +224,7 @@ class music_operations(commands.Cog):
             await send_command_error_message(ctx, 'Please enter a valid number.')
         
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            if not ctx.author.voice:
-                await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
-                return
-
-            bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
-
-            if not bot_voice_client:
-                await send_command_error_message(ctx, f'{self.__bot.user.name} is not connected to a voice channel.')
-
-            elif bot_voice_client.is_connected():
-                song_queue = self.__server_queues[ctx.guild.id]
-
-                song_queue.index = len(song_queue) - 1
-                await ctx.send(embed=discord.Embed(
-                    title=f'Playing {song_queue.title}',
-                    colour=discord.Colour.blue()))
-                
-                bot_voice_client.stop()
+            await self.jump(ctx, len(self.__server_queues[ctx.guild.id]))
 
     @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
     async def stop(self, ctx):
