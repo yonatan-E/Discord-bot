@@ -77,7 +77,7 @@ class music_operations(commands.Cog):
         if title not in song_queue:
             song_queue[title] = url
     
-        if bot_voice_client.is_connected() and not bot_voice_client.is_playing():
+        if not bot_voice_client.is_playing():
             await ctx.send(embed=discord.Embed(
                 title=f'Playing {title}',
                 colour=discord.Colour.blue()))
