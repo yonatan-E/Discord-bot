@@ -67,7 +67,7 @@ class music_operations(commands.Cog):
             await self.join(ctx)
             bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-            if not bot_voice_client:
+            if not bot_voice_client
                 return
     
         title, url = self.__yt_searcher.search(name)
@@ -79,13 +79,13 @@ class music_operations(commands.Cog):
     
         if not bot_voice_client.is_playing():
             await ctx.send(embed=discord.Embed(
-                title=f'Playing {song_queue.title}',
+                title=f'Playing {title}',
                 colour=discord.Colour.blue()))
             
             self.play_next(bot_voice_client)
         else:
             await ctx.send(embed=discord.Embed(
-                title=f'Queued {song_queue.title}',
+                title=f'Queued {title}',
                 colour=discord.Colour.blue()))
 
     @play.error
