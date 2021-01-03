@@ -53,9 +53,10 @@ class music_operations(commands.Cog):
         
         try:
             voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
-            song_queue.index += 1
         except:
             pass
+
+        song_queue.index += 1
 
     @commands.command(aliases=['p', 'P'])
     async def play(self, ctx, *, name):
