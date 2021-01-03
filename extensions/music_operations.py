@@ -168,8 +168,7 @@ class music_operations(commands.Cog):
         description = ''
         for i in range(0, len(song_queue)):
             description += f'**{i + 1}.** {song_queue[i]}'
-            print(song_queue.index)
-            if i == song_queue.index and bot_voice_client and bot_voice_client.is_connected():
+            if i == song_queue.index - 1 and bot_voice_client and bot_voice_client.is_connected():
                 description += ' - **current**'
             description += '\n'
 
