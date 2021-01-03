@@ -82,7 +82,7 @@ class music_operations(commands.Cog):
                 title=f'Playing {title}',
                 colour=discord.Colour.blue()))
 
-            song_queue.index = len(song_queue)
+            song_queue.index = len(song_queue) - 1
             self.play_next(bot_voice_client)
         else:
             await ctx.send(embed=discord.Embed(
