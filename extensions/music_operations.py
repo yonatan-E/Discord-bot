@@ -61,6 +61,13 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
     async def play(self, ctx, *, name):
+        title, url = self.__yt_searcher.search(name)
+
+        song_queue = self.__server_queues[ctx.guild.id]
+
+        if title not in song_queue:
+            song_queue[title] = url
+
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
     
         if not bot_voice_client:
@@ -69,13 +76,6 @@ class music_operations(commands.Cog):
 
             if not bot_voice_client:
                 return
-    
-        title, url = self.__yt_searcher.search(name)
-
-        song_queue = self.__server_queues[ctx.guild.id]
-
-        if title not in song_queue:
-            song_queue[title] = url
         
         if bot_voice_client.is_playing() or bot_voice_client.is_paused():
             await ctx.send(embed=discord.Embed(
@@ -254,16 +254,17 @@ class music_operations(commands.Cog):
     async def queue(self, ctx):
         if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
             description = 'The queue is empty right now.'
+        
+        else:
+            song_queue = self.__server_queues[ctx.guild.id]
+            bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-        song_queue = self.__server_queues[ctx.guild.id]
-        bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
-
-        description = ''
-        for i in range(0, len(song_queue)):
-            description += f'**{i + 1}.** {song_queue[i]}'
-            if i == song_queue.index - 1 and bot_voice_client and (bot_voice_client.is_playing() or bot_voice_client.is_paused()):
-                description += ' - **current**'
-            description += '\n'
+            description = ''
+            for i in range(0, len(song_queue)):
+                description += f'**{i + 1}.** {song_queue[i]}'
+                if i == song_queue.index - 1 and bot_voice_client and (bot_voice_client.is_playing() or bot_voice_client.is_paused()):
+                    description += ' - **current**'
+                description += '\n'
 
         await ctx.send(embed=discord.Embed(
             title=f'{self.__bot.user.name} queue',
