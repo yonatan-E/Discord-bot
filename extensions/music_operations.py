@@ -184,7 +184,7 @@ class music_operations(commands.Cog):
 
     @commands.command(aliases=['CLEAR'], help='Clear the queue\nUsage: **$clear**')
     async def clear(self, ctx):
-        await self.stop()
+        await self.stop(ctx)
 
         self.__server_queues[ctx.guild.id] = music_queue()
 
