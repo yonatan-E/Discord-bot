@@ -50,10 +50,10 @@ class music_operations(commands.Cog):
             await send_command_error_message(ctx, f'Please join {self.__bot.user.name} to a voice channel before making it leave one.')
     
     def play_next(self, voice_client):
-        song_queue = self.__server_queues[ctx.guild.id]
+        song_queue = self.__server_queues[voice_client.guild.id]
         
         try:
-            bot_voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
+            voice_client.play(discord.FFmpegPCMAudio(song_queue.url), after=lambda e: self.play_next(voice_client))
         except:
             pass
 
