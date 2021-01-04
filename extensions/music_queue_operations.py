@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 
-import youtube_dl
-
 from util.error_handling import send_command_error_message
 from util.music_queue import music_queue
 from util.music_util import yt_searcher
