@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 
-from util.error_handling import send_command_error_message
+from util.error_handling import create_error_embed
 
 class voice(commands.Cog):
 
@@ -14,13 +14,13 @@ class voice(commands.Cog):
         member_voice_status = ctx.author.voice
 
         if not member_voice_status:
-            await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
+            await ctx.send(create_error_embed('You have to connect to voice channel before you can do this command.'))
 
         else:
             bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
             if bot_voice_client and bot_voice_client.channel.id != member_voice_status.channel.id:
-                await send_command_error_message(ctx, f'{self.__bot.user.name} is already connected to another voice channel.')
+                await ctx.send(create_error_embed(f'{self.__bot.user.name} is already connected to another voice channel.'))
             else:
                 try:
                     await member_voice_status.channel.connect()
@@ -38,7 +38,7 @@ class voice(commands.Cog):
         if bot_voice_client:
             await bot_voice_client.disconnect()
         else:
-            await send_command_error_message(ctx, f'Please join {self.__bot.user.name} to a voice channel before making it leave one.')
+            await ctx.send(create_error_embed(f'Please join {self.__bot.user.name} to a voice channel before making it leave one.'))
 
 
 def setup(bot):

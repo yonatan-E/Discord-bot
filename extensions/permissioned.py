@@ -1,14 +1,14 @@
 import discord
 from discord.ext import commands
 
-from util.error_handling import send_command_error_message
+from util.error_handling import create_error_embed
 
 class permissioned(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
 
-        permissioned.cog_command_error = lambda self, ctx, error: send_command_error_message(ctx, str(error))
+        permissioned.cog_command_error = lambda self, ctx, error: ctx.send(create_error_embed(str(error)))
 
     @commands.command(aliases=['KICK'], help='Kick a member from the server.\nUsage: **$kick @<user_name>**')
     @commands.has_permissions(kick_members=True)

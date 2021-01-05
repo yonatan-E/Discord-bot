@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from util.error_handling import send_command_error_message
+from util.error_handling import create_error_embed
 
 class basic(commands.Cog):
 
@@ -42,7 +42,7 @@ class basic(commands.Cog):
     @delete.error
     async def delete_error(self, ctx, error):
         if isinstance(error, commands.errors.BadArgument):
-            await send_command_error_message(ctx, 'Please enter a valid number.')
+            await ctx.send(create_error_embed('Please enter a valid number.'))
 
     @commands.command(aliases=['INFO'], help='Get info about the bot.\nUsage: **$info**')
     async def info(self, ctx):

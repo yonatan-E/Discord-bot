@@ -3,7 +3,7 @@ from discord.ext import commands
 
 from discord.utils import get
 
-from util.error_handling import send_command_error_message
+from util.error_handling import create_error_embed
 
 from util.tictactoe.tictactoe import tictactoe as tictactoe_game
 from util.tictactoe.player import player, ai_player
@@ -41,11 +41,11 @@ class tictactoe(commands.Cog):
 		current_games = self.__server_tictactoes[ctx.guild.id]
 
 		if list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games)):
-			await send_command_error_message(f'You are already in a tictactoe game.')
+			await ctx.send(create_error_embed(f'{self.__bot.user.name}, you are already in a tictactoe game.'))
 			return
 
 		if list(filter(lambda game: member.id in [player.discord_id for player in game.players], current_games)):
-			await send_command_error_message(f'{member.name} is already in a tictactoe game.')
+			await ctx.send(create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
 
 		game = tictactoe_game(discord_player(player('x'), ctx.author), discord_player(player('o'), member))
@@ -60,25 +60,27 @@ class tictactoe(commands.Cog):
 	async def tictactoe_error(self, ctx, error):
 		if isinstance(error, commands.errors.MissingRequiredArgument):
 			await self.tictactoe(ctx, self.__bot.user)
+		elif isinstance(error, commands.errors.MemberNotFound):
+			await ctx.send(create_error_embed(str(error)))
 
 	@commands.command(aliases=['PLACE'])
 	async def place(self, ctx, place: int):
-		current_games = self.__server_tictactoes[ctx.guild.id]
-
 		try:
+			current_games = self.__server_tictactoes[ctx.guild.id]
+
 			game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
 		except:
-			await send_command_error_message(ctx, f'{ctx.author.name}, you have to be in a tictactoe game to do this command.')
+			await ctx.send(create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
 			return
 
 		if ctx.author.id != game.current_player.discord_id:
-			await send_command_error_message(ctx, f'{ctx.author.name}, it is not your turn.')
+			await ctx.send(create_error_embed(f'{ctx.author.name}, it is not your turn.'))
 			return
 
 		try:
 			game.do_turn(place)
 		except IndexError as e:
-			await send_command_error_message(ctx, f'{e} Please enter another place.')
+			await ctx.send(create_error_embed(f'{e} Please enter another place.'))
 			return
 
 		await ctx.send(self.create_custom_board(game))
