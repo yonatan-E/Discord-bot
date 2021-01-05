@@ -6,7 +6,7 @@ from util.error_handling import send_command_error_message
 from util.music_queue import music_queue
 from util.music_util import yt_searcher
 
-class music_queue(commands.Cog):
+class music(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
@@ -236,4 +236,4 @@ class music_queue(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(music_queue(bot))
+    bot.add_cog(music(bot))
