@@ -13,7 +13,7 @@ class permissioned(commands.Cog):
     @commands.command(aliases=['KICK'], help='Kick a member from the server.\nUsage: **$kick @<user_name>**')
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason='no reason'):
-        if ctx.author.mention == member.mention:
+        if ctx.author.id == member.id:
             await ctx.send(f'{member.name}, you can\'t kick yourself.')
             return
 
@@ -25,7 +25,7 @@ class permissioned(commands.Cog):
     @commands.command(aliases=['BAN'], help='Ban a member from the server.\nUsage: **$ban @<user_name>**')
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason='no reason'):
-        if ctx.author.mention == member.mention:
+        if ctx.author.id == member.id:
             await ctx.send(embed=discord.Embed(
                 title=f'{member.name}, you can\'t ban yourself.',
                 colour=discord.Colour.red()))

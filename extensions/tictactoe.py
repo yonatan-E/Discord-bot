@@ -57,12 +57,10 @@ class tictactoe(commands.Cog):
 		if isinstance(error, commands.errors.MissingRequiredArgument):
 			await self.tictactoe(ctx, self.__bot.user)
 		elif isinstance(error, commands.errors.BadArgument):
-			await send_command_error_message(ctx, 'Please enter a valid user name.')
-		else:
 			await send_command_error_message(ctx, str(error))
 
-	@commands.command(aliases=['PLACE'])
-	async def place(self, ctx, place: int):
+	#@commands.command(aliases=['PLACE'])
+	#async def place(self, ctx, place: int):
 
 
 
