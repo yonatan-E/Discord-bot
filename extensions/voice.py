@@ -4,7 +4,7 @@ from discord.utils import get
 
 from util.error_handling import send_command_error_message
 
-class voice_operations(commands.Cog):
+class voice(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
@@ -42,4 +42,4 @@ class voice_operations(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(voice_operations(bot))
+    bot.add_cog(voice(bot))

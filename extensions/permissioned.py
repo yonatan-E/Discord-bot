@@ -3,12 +3,12 @@ from discord.ext import commands
 
 from util.error_handling import send_command_error_message
 
-class permissioned_operations(commands.Cog):
+class permissioned(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
 
-        permissioned_operations.cog_command_error = lambda self, ctx, error: send_command_error_message(ctx, str(error))
+        permissioned.cog_command_error = lambda self, ctx, error: send_command_error_message(ctx, str(error))
 
     @commands.command(aliases=['KICK'], help='Kick a member from the server.\nUsage: **$kick @<user_name>**')
     @commands.has_permissions(kick_members=True)
@@ -58,4 +58,4 @@ class permissioned_operations(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(permissioned_operations(bot))
+    bot.add_cog(permissioned(bot))

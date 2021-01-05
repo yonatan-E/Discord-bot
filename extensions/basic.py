@@ -3,7 +3,7 @@ from discord.ext import commands
 
 from util.error_handling import send_command_error_message
 
-class basic_operations(commands.Cog):
+class basic(commands.Cog):
 
     def __init__(self, bot):
         self.__bot = bot
@@ -66,4 +66,4 @@ class basic_operations(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(basic_operations(bot))
+    bot.add_cog(basic(bot))
