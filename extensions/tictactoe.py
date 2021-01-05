@@ -74,7 +74,7 @@ class tictactoe(commands.Cog):
 			return
 
 		if ctx.author.id != game.current_player.discord_id:
-			await ctx.send(embed=(f'{ctx.author.name}, it is not your turn.'))
+			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, it is not your turn.'))
 			return
 
 		try:
