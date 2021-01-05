@@ -41,11 +41,11 @@ class tictactoe(commands.Cog):
 		current_games = self.__server_tictactoes[ctx.guild.id]
 
 		if list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games)):
-			await ctx.send(create_error_embed(f'{self.__bot.user.name}, you are already in a tictactoe game.'))
+			await ctx.send(embed=create_error_embed(f'{self.__bot.user.name}, you are already in a tictactoe game.'))
 			return
 
 		if list(filter(lambda game: member.id in [player.discord_id for player in game.players], current_games)):
-			await ctx.send(create_error_embed(f'{member.name} is already in a tictactoe game.'))
+			await ctx.send(embed=create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
 
 		game = tictactoe_game(discord_player(player('x'), ctx.author), discord_player(player('o'), member))
@@ -70,17 +70,17 @@ class tictactoe(commands.Cog):
 
 			game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
 		except:
-			await ctx.send(create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
+			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
 			return
 
 		if ctx.author.id != game.current_player.discord_id:
-			await ctx.send(create_error_embed(f'{ctx.author.name}, it is not your turn.'))
+			await ctx.send(embed=(f'{ctx.author.name}, it is not your turn.'))
 			return
 
 		try:
 			game.do_turn(place)
 		except IndexError as e:
-			await ctx.send(create_error_embed(f'{e} Please enter another place.'))
+			await ctx.send(embed=create_error_embed(f'{e} Please enter another place.'))
 			return
 
 		await ctx.send(self.create_custom_board(game))

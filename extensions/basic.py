@@ -42,7 +42,7 @@ class basic(commands.Cog):
     @delete.error
     async def delete_error(self, ctx, error):
         if isinstance(error, commands.errors.BadArgument):
-            await ctx.send(create_error_embed('Please enter a valid number.'))
+            await ctx.send(embed=create_error_embed('Please enter a valid number.'))
 
     @commands.command(aliases=['INFO'], help='Get info about the bot.\nUsage: **$info**')
     async def info(self, ctx):
