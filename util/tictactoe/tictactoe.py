@@ -14,8 +14,8 @@ class tictactoe:
 		self.__current_player.play_turn(self.__board, place)
 
 	def is_winning(self):
-		for state in WINNING_STATES:
-			if self.__board[state[0]] == self.__current_player.symbol and self.__board[state[1]] == self.__current_player.symbol
+		for state in self.WINNING_STATES:
+			if self.__board[state[0]] == self.__current_player.symbol and self.__board[state[1]] == self.__current_player.symbol \
 			and self.__board[state[2]] == self.__current_player.symbol:
 				return True
 		return False

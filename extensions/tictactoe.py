@@ -16,7 +16,7 @@ class tictactoe(commands.Cog):
 
 		self.__server_tictactoes = {}
 
-		self.__symbols = {'': ':black_square_button:', 'x': ':regional_indicator_x:', 'o': ':regional_indicator_o:'}
+		self.__symbols = {'': ':white_medium_square:', 'x': ':regional_indicator_x:', 'o': ':regional_indicator_o:'}
 
 	def create_custom_board(self, tictactoe):
 		from math import sqrt
@@ -66,13 +66,13 @@ class tictactoe(commands.Cog):
 		current_games = self.__server_tictactoes[ctx.guild.id]
 
 		try:
-			game = len(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
+			game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
 		except:
-			await send_command_error_message(ctx, f'{ctx.member.name}, you have to be in a tictactoe game to do this command.')
+			await send_command_error_message(ctx, f'{ctx.author.name}, you have to be in a tictactoe game to do this command.')
 			return
 
-		if ctx.author.id != game.current_player.id:
-			await send_command_error_message(ctx, f'{ctx.member.name}, it is not your turn.')
+		if ctx.author.id != game.current_player.discord_id:
+			await send_command_error_message(ctx, f'{ctx.author.name}, it is not your turn.')
 			return
 
 		try:
@@ -80,6 +80,8 @@ class tictactoe(commands.Cog):
 		except IndexError as e:
 			await send_command_error_message(ctx, f'{e} Please enter another place.')
 			return
+
+		await ctx.send(self.create_custom_board(game))
 
 		if game.is_winning():
 			await ctx.send(embed=discord.Embed(
@@ -90,11 +92,14 @@ class tictactoe(commands.Cog):
 			return
 
 		game.switch_player()
+		await ctx.send(embed=discord.Embed(
+            title=f'{game.current_player.discord_name}\'s turn.',
+            colour=discord.Colour.blue()))
 
-	@place.error
-	async def place_error(self, ctx, error):
-		if isinstance(error, commands.errors.BadArgument):
-            await send_command_error_message(ctx, 'Please enter a valid number.')
+    #@place.error
+    #async def place_error(self, ctx, error):
+    #	if isinstance(error, commands.errors.BadArgument):
+    #		await send_command_error_message(ctx, 'Please enter a valid number.')
 
 
 def setup(bot):
