@@ -41,7 +41,7 @@ class tictactoe(commands.Cog):
 		current_games = self.__server_tictactoes[ctx.guild.id]
 
 		if list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games)):
-			await ctx.send(embed=create_error_embed(f'{self.__bot.user.name}, you are already in a tictactoe game.'))
+			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you are already in a tictactoe game.'))
 			return
 
 		if list(filter(lambda game: member.id in [player.discord_id for player in game.players], current_games)):
@@ -61,7 +61,7 @@ class tictactoe(commands.Cog):
 		if isinstance(error, commands.errors.MissingRequiredArgument):
 			await self.tictactoe(ctx, self.__bot.user)
 		elif isinstance(error, commands.errors.MemberNotFound):
-			await ctx.send(create_error_embed(str(error)))
+			await ctx.send(embed=create_error_embed(str(error)))
 
 	@commands.command(aliases=['PLACE'])
 	async def place(self, ctx, place: int):
@@ -88,6 +88,14 @@ class tictactoe(commands.Cog):
 		if game.is_winning():
 			await ctx.send(embed=discord.Embed(
 	            title=f'{game.current_player.discord_name} won.',
+	            colour=discord.Colour.blue()))
+
+			current_games.remove(game)
+			return
+
+		elif '' not in game.board:
+			await ctx.send(embed=discord.Embed(
+	            title='Draw.',
 	            colour=discord.Colour.blue()))
 
 			current_games.remove(game)
