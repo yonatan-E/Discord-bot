@@ -4,11 +4,11 @@ class tictactoe:
 
 	WINNING_STATES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 
-	def __init__(self, player1, player2):
+	def __init__(self, players):
 		self.__board = [''] * 9
 
-		self.__players = [player1, player2]
-		self.__current_player = player1
+		self.__players = players
+		self.__current_player = players[0]
 
 	def do_turn(self, player, place):
 		player.play_turn(self.__board, place)

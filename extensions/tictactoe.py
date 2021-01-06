@@ -48,7 +48,7 @@ class tictactoe(commands.Cog):
 			await ctx.send(embed=create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
 
-		game = tictactoe_game(discord_player(player('x'), ctx.author), discord_player(player('o'), member))
+		game = tictactoe_game([discord_player(player('x'), ctx.author), discord_player(player('o'), member)])
 		current_games.append(game)
 
 		await ctx.send(self.create_board_message(game))
@@ -125,10 +125,10 @@ class tictactoe(commands.Cog):
             description=f'{game.current_player.discord_name}\'s turn.',
             colour=discord.Colour.blue()))
 
-    @place.error
-	async def place_error(self, ctx, error):
-    	if isinstance(error, commands.errors.BadArgument):
-    		await send_command_error_message(ctx, 'Please enter a valid number.')
+    #@place.error
+	#async def place_error(self, ctx, error):
+   # 	if isinstance(error, commands.errors.BadArgument):
+   # 		await send_command_error_message(ctx, 'Please enter a valid number.')
 
 
 def setup(bot):

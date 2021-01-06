@@ -4,7 +4,7 @@ class player:
 		self.__symbol = symbol
 
 	def play_turn(self, board, place):
-		if place - 1 not in range(0, 9):
+		if place - 1 not in range(0, len(board)):
 			raise IndexError(f'Place {place} is not in range.')
 		elif board[place - 1]:
 			raise IndexError(f'Place {place} is already taken.')
@@ -18,7 +18,7 @@ class player:
 class ai_player(player):
 
 	def play_turn(self, board, place):
-		if place - 1 not in range(0, 9):
+		if place - 1 not in range(0, len(board)):
 			raise IndexError(f'Place {place} is not in range.')
 		elif board[place - 1]:
 			raise IndexError(f'Place {place} is already taken.')
