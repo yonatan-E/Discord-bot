@@ -33,7 +33,7 @@ class tictactoe(commands.Cog):
 
 		return custom_board
 
-	@commands.command(aliases=['TICTACTOE'])
+	@commands.command(aliases=['TICTACTOE'], help='Start a tictactoe game.\nUsage: **$tictactoe <user_name>** or **$tictactoe**')
 	async def tictactoe(self, ctx, member: discord.Member):
 		if not ctx.guild.id in self.__server_tictactoes:
 			self.__server_tictactoes[ctx.guild.id] = []
@@ -62,26 +62,9 @@ class tictactoe(commands.Cog):
 		if isinstance(error, commands.errors.MissingRequiredArgument):
 			await self.tictactoe(ctx, self.__bot.user)
 		elif isinstance(error, commands.errors.MemberNotFound):
+			await ctx.send(embed=create_error_embed(str(error)))
 
-			if error.argument == 'end' or error.argument == 'END':
-				try:
-					current_games = self.__server_tictactoes[ctx.guild.id]
-
-					game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
-					current_games.remove(game)
-				except:
-					await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
-					return
-
-				await ctx.send(embed=discord.Embed(
-		            title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
-		            description=f'{ctx.author.name} ended the game.',
-		            colour=discord.Colour.blue()))
-
-			else:
-				await ctx.send(embed=create_error_embed(str(error)))
-
-	@commands.command(aliases=['PLACE'])
+	@commands.command(aliases=['PLACE'], help='Place a player symbol in a tictactoe game board.\nUsage: **$place <place_index>**')
 	async def place(self, ctx, place: int):
 		try:
 			current_games = self.__server_tictactoes[ctx.guild.id]
@@ -129,6 +112,23 @@ class tictactoe(commands.Cog):
 	async def place_error(self, ctx, error):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send(embed=create_error_embed('Please enter a valid number.'))
+
+	@commands.command(name='tictactoe-end', aliases=['TICTACTOE-END'], help='End a tictactoe game.\nUsage: **$tictactoe-end**')
+	async def tictactoe_end(self, ctx):
+		try:
+			current_games = self.__server_tictactoes[ctx.guild.id]
+
+			game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
+			current_games.remove(game)
+		except:
+			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
+			return
+
+		await ctx.send(embed=discord.Embed(
+            title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
+            description=f'{ctx.author.name} ended the game.',
+            colour=discord.Colour.blue()))
+
 
 
 def setup(bot):
