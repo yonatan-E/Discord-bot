@@ -15,7 +15,7 @@ class tictactoe:
 
 	def is_winning(self, player):
 		for state in self.WINNING_STATES:
-			if self.__board[state[0]] == player.symbol and self.__board[state[1]] == player.symbol and self.__board[state[2]] == player.symbol:
+			if len([place for place in state if self.__board[place] == player.symbol]) == len(state):
 				return True
 		return False
 
