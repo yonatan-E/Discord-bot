@@ -125,10 +125,10 @@ class tictactoe(commands.Cog):
             description=f'{game.current_player.discord_name}\'s turn.',
             colour=discord.Colour.blue()))
 
-    #@place.error
-	#async def place_error(self, ctx, error):
-   # 	if isinstance(error, commands.errors.BadArgument):
-   # 		await send_command_error_message(ctx, 'Please enter a valid number.')
+	@place.error
+	async def place_error(self, ctx, error):
+		if isinstance(error, commands.errors.BadArgument):
+			await ctx.send(embed=create_error_embed('Please enter a valid number.'))
 
 
 def setup(bot):
