@@ -9,7 +9,7 @@ class voice(commands.Cog):
     def __init__(self, bot):
         self.__bot = bot
 
-    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel. Usage: **$join**')
+    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel.\nUsage: **$join**')
     async def join(self, ctx):
         member_voice_status = ctx.author.voice
 

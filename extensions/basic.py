@@ -51,16 +51,16 @@ class basic(commands.Cog):
             description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by JONTI.**',
             colour=discord.Colour.blue()))
 
-    @commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
-    async def help(self, ctx):
-        embed = discord.Embed(
-            title=f'{self.__bot.user.name} help',
-            colour=discord.Colour.blue())
+    #@commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
+    #async def help(self, ctx):
+    #    embed = discord.Embed(
+    #        title=f'{self.__bot.user.name} help',
+    #        colour=discord.Colour.blue())
 
-        for command in self.__bot.commands:
-            embed.add_field(name=command, value=command.help, inline=True)
+    #    for command in self.__bot.commands:
+    #        embed.add_field(name=command, value=command.help, inline=True)
 
-        await ctx.send(embed=embed)
+    #    await ctx.send(embed=embed)
 
 
 def setup(bot):
