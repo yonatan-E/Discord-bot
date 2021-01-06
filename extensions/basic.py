@@ -35,7 +35,7 @@ class basic(commands.Cog):
                     title=f'I\'m ready <:beers:795025887737020436>',
                     colour=discord.Colour.blue()))
 
-    @commands.command(help='Delete the last messages from the chat.\nUsage: **$delete <number_of_messages>**')
+    @commands.command(help='Delete the last messages from the chat.')
     async def delete(self, ctx, amount: int):
         await ctx.channel.purge(limit=amount)
 
@@ -44,11 +44,11 @@ class basic(commands.Cog):
         if isinstance(error, commands.errors.BadArgument):
             await ctx.send(embed=create_error_embed('Please enter a valid number.'))
 
-    @commands.command(aliases=['INFO'], help='Get info about the bot.\nUsage: **$info**')
+    @commands.command(aliases=['INFO'], help='Get info about the bot.')
     async def info(self, ctx):
         await ctx.send(embed=discord.Embed(
             title=f'{self.__bot.user.name} info',
-            description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by JONTI.**',
+            description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by Yonatan Ehrenreich.**',
             colour=discord.Colour.blue()))
 
     #@commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')

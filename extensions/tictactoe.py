@@ -33,7 +33,7 @@ class tictactoe(commands.Cog):
 
 		return custom_board
 
-	@commands.command(aliases=['TICTACTOE'], help='Start a tictactoe game.\nUsage: **$tictactoe <user_name>** or **$tictactoe**')
+	@commands.command(aliases=['TICTACTOE'], help='Start a tictactoe game.')
 	async def tictactoe(self, ctx, member: discord.Member):
 		if not ctx.guild.id in self.__server_tictactoes:
 			self.__server_tictactoes[ctx.guild.id] = []
@@ -64,7 +64,7 @@ class tictactoe(commands.Cog):
 		elif isinstance(error, commands.errors.MemberNotFound):
 			await ctx.send(embed=create_error_embed(str(error)))
 
-	@commands.command(aliases=['PLACE'], help='Place a player symbol in a tictactoe game board.\nUsage: **$place <place_index>**')
+	@commands.command(aliases=['PLACE'], help='Place a player symbol in a tictactoe game board.')
 	async def place(self, ctx, place: int):
 		try:
 			current_games = self.__server_tictactoes[ctx.guild.id]
@@ -113,7 +113,7 @@ class tictactoe(commands.Cog):
 		if isinstance(error, commands.errors.BadArgument):
 			await ctx.send(embed=create_error_embed('Please enter a valid number.'))
 
-	@commands.command(name='tictactoe-end', aliases=['TICTACTOE-END'], help='End a tictactoe game.\nUsage: **$tictactoe-end**')
+	@commands.command(name='tictactoe-end', aliases=['TICTACTOE-END'], help='End a tictactoe game.')
 	async def tictactoe_end(self, ctx):
 		try:
 			current_games = self.__server_tictactoes[ctx.guild.id]

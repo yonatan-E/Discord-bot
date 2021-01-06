@@ -9,7 +9,7 @@ class voice(commands.Cog):
     def __init__(self, bot):
         self.__bot = bot
 
-    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel.\nUsage: **$join**')
+    @commands.command(aliases=['JOIN', 'connect', 'CONNECT'], help='Make the bot to join to the current voice channel.')
     async def join(self, ctx):
         member_voice_status = ctx.author.voice
 
@@ -31,7 +31,7 @@ class voice(commands.Cog):
 
         return False
 
-    @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.\nUsage: **$leave**')
+    @commands.command(aliases=['LEAVE', 'disconnect', 'DISCONNECT'], help='Make the bot to leave the current voice channel.')
     async def leave(self, ctx):
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 

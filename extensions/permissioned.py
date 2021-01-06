@@ -10,7 +10,7 @@ class permissioned(commands.Cog):
 
         permissioned.cog_command_error = lambda self, ctx, error: ctx.send(embed=create_error_embed(str(error)))
 
-    @commands.command(aliases=['KICK'], help='Kick a member from the server.\nUsage: **$kick @<user_name>**')
+    @commands.command(aliases=['KICK'], help='Kick a member from the server.')
     @commands.has_permissions(kick_members=True)
     async def kick(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.id == member.id:
@@ -22,7 +22,7 @@ class permissioned(commands.Cog):
             title=f'Member {member.name} was kicked because of {reason}.',
             colour=discord.Colour.red()))
 
-    @commands.command(aliases=['BAN'], help='Ban a member from the server.\nUsage: **$ban @<user_name>**')
+    @commands.command(aliases=['BAN'], help='Ban a member from the server.')
     @commands.has_permissions(ban_members=True)
     async def ban(self, ctx, member: discord.Member, *, reason='no reason'):
         if ctx.author.id == member.id:
@@ -38,7 +38,7 @@ class permissioned(commands.Cog):
         
 
 
-    @commands.command(aliases=['UNBAN'], help='Unban a member from the server.\nUsage: **$unben <user_name>#<user_descriminator>**')
+    @commands.command(aliases=['UNBAN'], help='Unban a member from the server.')
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member):
         banned_users = await ctx.guild.bans()

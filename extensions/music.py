@@ -27,7 +27,7 @@ class music(commands.Cog):
         else:
             song_queue.index = 0
 
-    @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.\nUsage: **$play <song_name>** or **$play**')
+    @commands.command(aliases=['PLAY', 'p', 'P'], help='Add a song to the queue and/or play the next song from the queue.')
     async def play(self, ctx, *, name):
         if not await ctx.invoke(self.__bot.get_command('join')):
             return
@@ -81,7 +81,7 @@ class music(commands.Cog):
 
                     self.play_next(bot_voice_client)
 
-    @commands.command(aliases=['PAUSE'], help='Pause the played song.\nUsage: **$pause**')
+    @commands.command(aliases=['PAUSE'], help='Pause the played song.')
     async def pause(self, ctx):
         if not ctx.author.voice:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
@@ -96,7 +96,7 @@ class music(commands.Cog):
         else:
             bot_voice_client.pause()
 
-    @commands.command(aliases=['RESUME'], help='Resume the paused song.\nUsage: **$resume**')
+    @commands.command(aliases=['RESUME'], help='Resume the paused song.')
     async def resume(self, ctx):
         if not ctx.author.voice:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
@@ -111,7 +111,7 @@ class music(commands.Cog):
         else:
             bot_voice_client.resume()
 
-    @commands.command(aliases=['NEXT', 'n', 'N'], help='Play the next song from the queue.\nUsage: **$next**')
+    @commands.command(aliases=['NEXT', 'n', 'N'], help='Play the next song from the queue.')
     async def next(self, ctx):
         if not ctx.author.voice:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
@@ -134,7 +134,7 @@ class music(commands.Cog):
                 
                 bot_voice_client.stop()
 
-    @commands.command(aliases=['PREV'], help='Play the prev song from the queue.\nUsage: **$prev**')
+    @commands.command(aliases=['PREV'], help='Play the prev song from the queue.')
     async def prev(self, ctx):
         if not ctx.author.voice:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
@@ -158,7 +158,7 @@ class music(commands.Cog):
                 
                 bot_voice_client.stop()
 
-    @commands.command(aliases=['JUMP'], help='Play the song in the specified place in the queue.\nUsage: **$jump <place_in_queue>** or **$jump**')
+    @commands.command(aliases=['JUMP'], help='Play the song in the specified place in the queue.')
     async def jump(self, ctx, place: int):
         if not ctx.author.voice:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
@@ -190,7 +190,7 @@ class music(commands.Cog):
         elif isinstance(error, commands.errors.MissingRequiredArgument):
             await self.jump(ctx, len(self.__server_queues[ctx.guild.id]))
 
-    @commands.command(aliases=['STOP'], help='Stop the queue.\nUsage: **$stop**')
+    @commands.command(aliases=['STOP'], help='Stop the queue.')
     async def stop(self, ctx):
         if not ctx.author.voice:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
@@ -207,13 +207,13 @@ class music(commands.Cog):
 
             bot_voice_client.stop()
 
-    @commands.command(aliases=['CLEAR'], help='Clear the queue\nUsage: **$clear**')
+    @commands.command(aliases=['CLEAR'], help='Clear the queue')
     async def clear(self, ctx):
         await self.stop(ctx)
 
         self.__server_queues[ctx.guild.id] = music_queue()
 
-    @commands.command(aliases=['QUEUE'], help='Show the queue.\nUsage: **$queue**')
+    @commands.command(aliases=['QUEUE'], help='Show the queue.')
     async def queue(self, ctx):
         if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
             description = 'The queue is empty right now.'
