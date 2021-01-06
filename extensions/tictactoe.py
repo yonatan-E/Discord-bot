@@ -18,15 +18,15 @@ class tictactoe(commands.Cog):
 
 		self.__symbols = {'': ':white_medium_square:', 'x': ':regional_indicator_x:', 'o': ':regional_indicator_o:'}
 
-	def create_custom_board(self, tictactoe):
+	def create_board_message(self, game):
 		from math import sqrt
 
-		board_size = len(tictactoe.board)
+		board_size = len(game.board)
 		board_length = sqrt(board_size)
 
 		custom_board = ''
 		for i in range(0, board_size):
-			custom_board += self.__symbols[tictactoe.board[i]]
+			custom_board += self.__symbols[game.board[i]]
 
 			if (i + 1) % board_length == 0:
 				custom_board += '\n'
@@ -51,9 +51,10 @@ class tictactoe(commands.Cog):
 		game = tictactoe_game(discord_player(player('x'), ctx.author), discord_player(player('o'), member))
 		current_games.append(game)
 
-		await ctx.send(self.create_custom_board(game))
+		await ctx.send(self.create_board_message(game))
 		await ctx.send(embed=discord.Embed(
-            title=f'{game.current_player.discord_name}\'s turn.',
+            title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
+            description=f'{game.current_player.discord_name}\'s turn.',
             colour=discord.Colour.blue()))
 
 	@tictactoe.error
@@ -61,7 +62,24 @@ class tictactoe(commands.Cog):
 		if isinstance(error, commands.errors.MissingRequiredArgument):
 			await self.tictactoe(ctx, self.__bot.user)
 		elif isinstance(error, commands.errors.MemberNotFound):
-			await ctx.send(embed=create_error_embed(str(error)))
+
+			if error.argument == 'end' or error.argument == 'END':
+				try:
+					current_games = self.__server_tictactoes[ctx.guild.id]
+
+					game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
+					current_games.remove(game)
+				except:
+					await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
+					return
+
+				await ctx.send(embed=discord.Embed(
+		            title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
+		            description=f'{ctx.author.name} ended the game.',
+		            colour=discord.Colour.blue()))
+
+			else:
+				await ctx.send(embed=create_error_embed(str(error)))
 
 	@commands.command(aliases=['PLACE'])
 	async def place(self, ctx, place: int):
@@ -78,16 +96,16 @@ class tictactoe(commands.Cog):
 			return
 
 		try:
-			game.do_turn(place)
+			game.do_turn(game.current_player, place)
 		except IndexError as e:
 			await ctx.send(embed=create_error_embed(f'{e} Please enter another place.'))
 			return
 
-		await ctx.send(self.create_custom_board(game))
+		await ctx.send(self.create_board_message(game))
 
-		if game.is_winning():
+		if game.is_winning(game.current_player):
 			await ctx.send(embed=discord.Embed(
-	            title=f'{game.current_player.discord_name} won.',
+	            title=f'{game.current_player.discord_name} won <:beers:795025887737020436>',
 	            colour=discord.Colour.blue()))
 
 			current_games.remove(game)
@@ -95,7 +113,7 @@ class tictactoe(commands.Cog):
 
 		elif '' not in game.board:
 			await ctx.send(embed=discord.Embed(
-	            title='Draw.',
+	            title='Draw <:beers:795025887737020436>',
 	            colour=discord.Colour.blue()))
 
 			current_games.remove(game)
@@ -103,13 +121,14 @@ class tictactoe(commands.Cog):
 
 		game.switch_player()
 		await ctx.send(embed=discord.Embed(
-            title=f'{game.current_player.discord_name}\'s turn.',
+            title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
+            description=f'{game.current_player.discord_name}\'s turn.',
             colour=discord.Colour.blue()))
 
-    #@place.error
-    #async def place_error(self, ctx, error):
-    #	if isinstance(error, commands.errors.BadArgument):
-    #		await send_command_error_message(ctx, 'Please enter a valid number.')
+    @place.error
+	async def place_error(self, ctx, error):
+    	if isinstance(error, commands.errors.BadArgument):
+    		await send_command_error_message(ctx, 'Please enter a valid number.')
 
 
 def setup(bot):

@@ -10,13 +10,12 @@ class tictactoe:
 		self.__players = [player1, player2]
 		self.__current_player = player1
 
-	def do_turn(self, place):
-		self.__current_player.play_turn(self.__board, place)
+	def do_turn(self, player, place):
+		player.play_turn(self.__board, place)
 
-	def is_winning(self):
+	def is_winning(self, player):
 		for state in self.WINNING_STATES:
-			if self.__board[state[0]] == self.__current_player.symbol and self.__board[state[1]] == self.__current_player.symbol \
-			and self.__board[state[2]] == self.__current_player.symbol:
+			if self.__board[state[0]] == player.symbol and self.__board[state[1]] == player.symbol and self.__board[state[2]] == player.symbol:
 				return True
 		return False
 

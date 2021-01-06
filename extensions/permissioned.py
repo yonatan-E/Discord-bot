@@ -51,7 +51,7 @@ class permissioned(commands.Cog):
                 await ctx.guild.unban(user)
                 await ctx.send(embed=discord.Embed(
                     title=f'Member {user.name} was unbanned',
-                    colour=discord.Colour.green()))
+                    colour=discord.Colour.blue()))
                 return
 
         raise commands.errors.MemberNotFound(member)
