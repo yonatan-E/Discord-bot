@@ -1,9 +1,7 @@
-from util.tictactoe.tictactoe_board import tictactoe_board
+class tictactoe_wrapper:
 
-class tictactoe:
-
-	def __init__(self, players):
-		self.__board = tictactoe_board()
+	def __init__(self, board, players):
+		self.__board = board
 
 		self.__players = players
 		self.__current_player = players[0]

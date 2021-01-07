@@ -5,7 +5,8 @@ from discord.utils import get
 
 from util.error_handling import create_error_embed
 
-from util.tictactoe.tictactoe import tictactoe as tictactoe_game
+from util.tictactoe.tictactoe import tictactoe_wrapper
+from util.tictactoe.tictactoe_board import tictactoe_board
 from util.tictactoe.player import player, ai_player
 from util.tictactoe.discord_player import discord_player
 
@@ -48,7 +49,7 @@ class tictactoe(commands.Cog):
 			await ctx.send(embed=create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
 		
-		game = tictactoe_game([discord_player(player('x'), ctx.author), discord_player(player('o'), member)])
+		game = tictactoe_wrapper(tictactoe_board(), [discord_player(player('x'), ctx.author), discord_player(player('o'), member)])
 		current_games.append(game)
 		
 		await ctx.send(self.create_board_message(game.board))
