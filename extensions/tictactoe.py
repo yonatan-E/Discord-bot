@@ -41,11 +41,11 @@ class tictactoe(commands.Cog):
 
 		current_games = self.__server_tictactoes[ctx.guild.id]
 
-		if list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games)):
+		if [game for game in current_games if ctx.author.id in [player.discord_id for player in game.players]]:
 			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you are already in a tictactoe game.'))
 			return
 		
-		if list(filter(lambda game: member.id in [player.discord_id for player in game.players], current_games)):
+		if [game for game in current_games if member.id in [player.discord_id for player in game.players]]:
 			await ctx.send(embed=create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
 		
@@ -69,8 +69,7 @@ class tictactoe(commands.Cog):
 	async def place(self, ctx, place: int):
 		try:
 			current_games = self.__server_tictactoes[ctx.guild.id]
-
-			game = list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games))[0]
+			game = [game for game in current_games if ctx.author.id in [player.discord_id for player in game.players]][0]
 		except:
 			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you have to be in a tictactoe game to do this command.'))
 			return
