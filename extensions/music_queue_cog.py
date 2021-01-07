@@ -64,25 +64,22 @@ class music_queue_cog(commands.Cog):
             if not await ctx.invoke(self.__bot.get_command('join')):
                 return
 
-            if ctx.guild.id not in self.__server_queues:
-                self.__server_queues[ctx.guild.id] = music_queue()
+            if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
+                await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} queue is empty right now.'))
+                return
+
             song_queue = self.__server_queues[ctx.guild.id]
+            bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
 
-            if not song_queue:
-                await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} queue is empty.'))
+            if bot_voice_client.is_paused():
+                bot_voice_client.resume()
+            
+            elif not bot_voice_client.is_playing():
+                await ctx.send(embed=discord.Embed(
+                    title=f'Playing {song_queue.title}',
+                    colour=discord.Colour.blue()))
 
-            else:
-                bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
-
-                if bot_voice_client.is_paused():
-                    bot_voice_client.resume()
-                
-                elif not bot_voice_client.is_playing():
-                    await ctx.send(embed=discord.Embed(
-                        title=f'Playing {song_queue.title}',
-                        colour=discord.Colour.blue()))
-
-                    self.play_next(bot_voice_client)
+                self.play_next(bot_voice_client)
 
     @commands.command(aliases=['PAUSE'], help='Pause the played song.')
     async def pause(self, ctx):
@@ -245,7 +242,7 @@ class music_queue_cog(commands.Cog):
     @commands.command(aliases=['QUEUE'], help='Show the queue.')
     async def queue(self, ctx):
         if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
-            description = 'The queue is empty right now.'
+            description = f'{self.__bot.user.name} queue is empty right now.'
         
         else:
             song_queue = self.__server_queues[ctx.guild.id]
