@@ -3,7 +3,10 @@ from discord.ext import commands
 
 from util.error_handling import create_error_embed
 
-class basic(commands.Cog):
+class basic_cog(commands.Cog):
+
+    qualified_name = 'Basic commands'
+    description = 'The basic commands of the bot'
 
     def __init__(self, bot):
         self.__bot = bot
@@ -51,17 +54,32 @@ class basic(commands.Cog):
             description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by Yonatan Ehrenreich.**',
             colour=discord.Colour.blue()))
 
-    #@commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
-    #async def help(self, ctx):
-    #    embed = discord.Embed(
-    #        title=f'{self.__bot.user.name} help',
-    #        colour=discord.Colour.blue())
+    @commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
+    async def help(self, ctx, command):
+        embed = discord.Embed(
+            title=f'{self.__bot.user.name} help',
+            colour=discord.Colour.blue())
 
-    #    for command in self.__bot.commands:
-    #        embed.add_field(name=command, value=command.help, inline=True)
+        for command in self.__bot.commands:
+            embed.add_field(name=command, value=command.help, inline=True)
 
-    #    await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
+
+    @help.error
+    async def help_error(self, ctx, error):
+        if isinstance(error, commands.errors.MissingRequiredArgument):
+            embed = discord.Embed(
+                title=f'{self.__bot.user.name} help',
+                colour=discord.Colour.blue())
+
+            for cog in self.__bot.cogs.values():
+                embed.add_field(name=cog.qualified_name, value=f'**{cog.description}**', inline=False)
+
+                for command in cog.walk_commands():
+                    embed.add_field(name=command, value=command.help, inline=True)
+
+            await ctx.send(embed=embed)
 
 
 def setup(bot):
-    bot.add_cog(basic(bot))
+    bot.add_cog(basic_cog(bot))

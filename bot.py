@@ -9,7 +9,7 @@ class discord_bot(commands.Bot):
     VERSION = '1.1.0'
 
     def __init__(self):
-        super().__init__(command_prefix='$')
+        super().__init__(command_prefix='$', help_command=None)
 
         # load the extensions
         for file_name in os.listdir('./extensions'):

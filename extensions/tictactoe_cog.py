@@ -10,7 +10,10 @@ from util.tictactoe.tictactoe_board import tictactoe_board
 from util.tictactoe.player import player, ai_player
 from util.tictactoe.discord_player import discord_player
 
-class tictactoe(commands.Cog):
+class tictactoe_cog(commands.Cog):
+
+	qualified_name = 'Tictactoe game commands'
+    description = 'The commands of the tictactoe game of the bot'
 
 	def __init__(self, bot):
 		self.__bot = bot
@@ -132,4 +135,4 @@ class tictactoe(commands.Cog):
 
 
 def setup(bot):
-	bot.add_cog(tictactoe(bot))
+	bot.add_cog(tictactoe_cog(bot))

@@ -5,6 +5,9 @@ from util.error_handling import create_error_embed
 
 class permissioned(commands.Cog):
 
+    qualified_name = 'Permissioned commands'
+    description = 'The permissioned commands of the bot. You need to get a permission to do these commands.'
+
     def __init__(self, bot):
         self.__bot = bot
 
@@ -35,9 +38,7 @@ class permissioned(commands.Cog):
         await ctx.send(embed=discord.Embed(
             title=f'Member {member.name} was banned because of {reason}.',
             colour=discord.Colour.red()))
-        
-
-
+    
     @commands.command(aliases=['UNBAN'], help='Unban a member from the server.')
     @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, *, member):

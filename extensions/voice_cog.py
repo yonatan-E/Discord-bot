@@ -4,7 +4,10 @@ from discord.utils import get
 
 from util.error_handling import create_error_embed
 
-class voice(commands.Cog):
+class voice_cog(commands.Cog):
+
+    qualified_name = 'Voice channel commands'
+    description = 'The voice channel commands of the bot'
 
     def __init__(self, bot):
         self.__bot = bot
@@ -42,4 +45,4 @@ class voice(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(voice(bot))
+    bot.add_cog(voice_cog(bot))
