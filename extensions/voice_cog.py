@@ -6,8 +6,8 @@ from util.error_handling import create_error_embed
 
 class voice_cog(commands.Cog):
 
-    qualified_name = 'Voice channel commands'
-    description = 'The voice channel commands of the bot'
+    qualified_name = 'voice'
+    description = 'The voice channel commands of the bot.'
 
     def __init__(self, bot):
         self.__bot = bot

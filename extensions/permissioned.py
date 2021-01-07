@@ -5,7 +5,7 @@ from util.error_handling import create_error_embed
 
 class permissioned(commands.Cog):
 
-    qualified_name = 'Permissioned commands'
+    qualified_name = 'permissioned'
     description = 'The permissioned commands of the bot. You need to get a permission to do these commands.'
 
     def __init__(self, bot):

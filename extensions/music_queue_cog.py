@@ -8,8 +8,8 @@ from util.music_util import yt_searcher
 
 class music_queue_cog(commands.Cog):
 
-    qualified_name = 'Music queue commands'
-    description = 'The commands of the music queue of the bot'
+    qualified_name = 'music'
+    description = 'The commands of the music queue of the bot.'
 
     def __init__(self, bot):
         self.__bot = bot

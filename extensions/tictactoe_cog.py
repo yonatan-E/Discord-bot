@@ -12,8 +12,8 @@ from util.tictactoe.discord_player import discord_player
 
 class tictactoe_cog(commands.Cog):
 
-	qualified_name = 'Tictactoe game commands'
-    description = 'The commands of the tictactoe game of the bot'
+	qualified_name = 'tictactoe'
+	description = 'The commands of the tictactoe game of the bot.'
 
 	def __init__(self, bot):
 		self.__bot = bot

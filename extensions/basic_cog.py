@@ -5,8 +5,8 @@ from util.error_handling import create_error_embed
 
 class basic_cog(commands.Cog):
 
-    qualified_name = 'Basic commands'
-    description = 'The basic commands of the bot'
+    qualified_name = 'basic'
+    description = 'The basic commands of the bot.'
 
     def __init__(self, bot):
         self.__bot = bot
@@ -54,31 +54,32 @@ class basic_cog(commands.Cog):
             description=f'**The bot version is {self.__bot.VERSION}.\nThe bot was developed by Yonatan Ehrenreich.**',
             colour=discord.Colour.blue()))
 
-    @commands.command(aliases=['HELP'], help='Get right here.\nUsage: **$help**')
-    async def help(self, ctx, command):
+    @commands.command(aliases=['HELP'], help='Get right here.')
+    async def help(self, ctx, *, category):
+        cog = [cog for cog in self.__bot.cogs.values() if cog.qualified_name == category][0]
+
         embed = discord.Embed(
             title=f'{self.__bot.user.name} help',
             colour=discord.Colour.blue())
 
-        for command in self.__bot.commands:
-            embed.add_field(name=command, value=command.help, inline=True)
+        embed.add_field(name=cog.qualified_name, value=f'**{cog.description}**', inline=False)
+
+        for command in cog.walk_commands():
+            embed.add_field(name=command, value=command.help, inline=False)
 
         await ctx.send(embed=embed)
 
     @help.error
     async def help_error(self, ctx, error):
-        if isinstance(error, commands.errors.MissingRequiredArgument):
-            embed = discord.Embed(
-                title=f'{self.__bot.user.name} help',
-                colour=discord.Colour.blue())
+        embed = discord.Embed(
+            title=f'{self.__bot.user.name} help',
+            description='**Please choose a category from the following categories:**',
+            colour=discord.Colour.blue())
 
-            for cog in self.__bot.cogs.values():
-                embed.add_field(name=cog.qualified_name, value=f'**{cog.description}**', inline=False)
+        for cog in self.__bot.cogs.values():
+            embed.add_field(name=cog.qualified_name, value=f'{cog.description}', inline=False)
 
-                for command in cog.walk_commands():
-                    embed.add_field(name=command, value=command.help, inline=True)
-
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
