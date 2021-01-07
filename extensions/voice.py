@@ -15,19 +15,19 @@ class voice(commands.Cog):
 
         if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
+            return
 
+        bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+
+        if bot_voice_client and bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is already connected to another voice channel.'))
         else:
-            bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+            try:
+                await member_voice_status.channel.connect()
+            except:
+                pass
 
-            if bot_voice_client and bot_voice_client.channel.id != member_voice_status.channel.id:
-                await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is already connected to another voice channel.'))
-            else:
-                try:
-                    await member_voice_status.channel.connect()
-                except:
-                    pass
-
-                return True
+            return True
 
         return False
 

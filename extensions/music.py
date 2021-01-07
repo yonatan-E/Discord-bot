@@ -83,7 +83,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['PAUSE'], help='Pause the played song.')
     async def pause(self, ctx):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await send_command_error_message(ctx, 'You have to connect to voice channel before you can do this command.')
             return
 
@@ -91,6 +93,8 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif not bot_voice_client.is_playing():
             await ctx.send(embed=create_error_embed('Currently there isn\'t a played song to pause.'))
         else:
@@ -98,7 +102,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['RESUME'], help='Resume the paused song.')
     async def resume(self, ctx):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
             return
 
@@ -106,6 +112,8 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif not bot_voice_client.is_paused():
             await ctx.send(embed=create_error_embed('Currently there isn\'t a paused song to resume.'))
         else:
@@ -113,7 +121,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['NEXT', 'n', 'N'], help='Play the next song from the queue.')
     async def next(self, ctx):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
             return
 
@@ -121,7 +131,8 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
-
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif bot_voice_client.is_connected():
             song_queue = self.__server_queues[ctx.guild.id]
 
@@ -136,7 +147,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['PREV'], help='Play the prev song from the queue.')
     async def prev(self, ctx):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
             return
 
@@ -144,7 +157,8 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
-
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif bot_voice_client.is_connected():
             song_queue = self.__server_queues[ctx.guild.id]
 
@@ -160,7 +174,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['JUMP'], help='Play the song in the specified place in the queue.')
     async def jump(self, ctx, place: int):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
             return
 
@@ -168,7 +184,8 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
-
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif bot_voice_client.is_connected():
             song_queue = self.__server_queues[ctx.guild.id]
 
@@ -192,7 +209,9 @@ class music(commands.Cog):
 
     @commands.command(aliases=['STOP'], help='Stop the queue.')
     async def stop(self, ctx):
-        if not ctx.author.voice:
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
             await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
             return
 
@@ -200,18 +219,25 @@ class music(commands.Cog):
 
         if not bot_voice_client:
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
-        
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
         elif bot_voice_client.is_connected():
-            song_queue = self.__server_queues[ctx.guild.id]
-            song_queue.index = -1
+            try:
+                song_queue = self.__server_queues[ctx.guild.id]
+                song_queue.index = -1
+            except:
+                pass
 
             bot_voice_client.stop()
 
+            return True
+
+        return False
+
     @commands.command(aliases=['CLEAR'], help='Clear the queue')
     async def clear(self, ctx):
-        await self.stop(ctx)
-
-        self.__server_queues[ctx.guild.id] = music_queue()
+        if await self.stop(ctx):
+            self.__server_queues[ctx.guild.id] = music_queue()
 
     @commands.command(aliases=['QUEUE'], help='Show the queue.')
     async def queue(self, ctx):

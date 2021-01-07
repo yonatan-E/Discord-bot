@@ -5,7 +5,7 @@ from discord.utils import get
 
 from util.error_handling import create_error_embed
 
-from util.tictactoe.tictactoe import tictactoe_wrapper
+from util.tictactoe.tictactoe_wrapper import tictactoe_wrapper
 from util.tictactoe.tictactoe_board import tictactoe_board
 from util.tictactoe.player import player, ai_player
 from util.tictactoe.discord_player import discord_player
