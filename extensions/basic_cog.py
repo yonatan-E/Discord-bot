@@ -11,9 +11,9 @@ class basic_cog(commands.Cog):
     def __init__(self, bot):
         self.__bot = bot
 
-    #@commands.Cog.listener()
-    #async def on_ready(self):
-        #await self.__bot.change_presence(activity=discord.Game('JontiBot'))
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.__bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name='$help'))
 
     #    for guild in self.__bot.guilds:
     #        for channel in guild.channels:
@@ -73,7 +73,7 @@ class basic_cog(commands.Cog):
     async def help_error(self, ctx, error):
         embed = discord.Embed(
             title=f'{self.__bot.user.name} help',
-            description='**Please choose a category from the following categories:**',
+            description='**Please choose a category from the following categories:**\n(type $help <category_name>)',
             colour=discord.Colour.blue())
 
         for cog in self.__bot.cogs.values():
