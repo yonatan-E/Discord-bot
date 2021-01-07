@@ -79,14 +79,14 @@ class tictactoe(commands.Cog):
 			return
 
 		try:
-			game.do_turn(game.current_player, place)
+			game.do_turn(place)
 		except IndexError as e:
 			await ctx.send(embed=create_error_embed(f'{e} Please enter another place.'))
 			return
 
 		await ctx.send(self.create_board_message(game))
 
-		if game.is_winning(game.current_player):
+		if game.is_winning():
 			await ctx.send(embed=discord.Embed(
 	            title=f'{game.current_player.discord_name} won <:beers:795025887737020436>',
 	            colour=discord.Colour.blue()))
@@ -94,7 +94,7 @@ class tictactoe(commands.Cog):
 			current_games.remove(game)
 			return
 
-		elif '' not in game.board:
+		elif game.board.is_full():
 			await ctx.send(embed=discord.Embed(
 	            title='Draw <:beers:795025887737020436>',
 	            colour=discord.Colour.blue()))

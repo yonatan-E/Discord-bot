@@ -1,23 +1,18 @@
-import util.tictactoe.player
+import util.tictactoe.tictactoe_board
 
 class tictactoe:
 
-	WINNING_STATES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
-
 	def __init__(self, players):
-		self.__board = [''] * 9
+		self.__board = tictactoe_board()
 
 		self.__players = players
 		self.__current_player = players[0]
 
-	def do_turn(self, player, place):
-		player.play_turn(self.__board, place)
+	def do_turn(self, place):
+		self.__current_player.play_turn(self.__board, place)
 
-	def is_winning(self, player):
-		for state in self.WINNING_STATES:
-			if len([place for place in state if self.__board[place] == player.symbol]) == len(state):
-				return True
-		return False
+	def is_winning(self):
+		self.__board.has_winning_state(self.__current_player.symbol)
 
 	def switch_player(self):
 		self.__current_player = self.__players[(self.__players.index(self.__current_player) + 1) % len(self.__players)]
