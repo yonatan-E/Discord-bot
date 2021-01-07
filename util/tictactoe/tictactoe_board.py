@@ -27,4 +27,4 @@ class tictactoe_board:
 		return False
 
 	def is_full(self):
-		return '' in self.__board
+		return '' not in self.__board
