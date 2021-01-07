@@ -1,4 +1,4 @@
-import util.tictactoe.tictactoe_board
+from util.tictactoe.tictactoe_board import tictactoe_board
 
 class tictactoe:
 

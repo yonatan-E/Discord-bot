@@ -18,17 +18,17 @@ class tictactoe(commands.Cog):
 
 		self.__symbols = {'': ':white_medium_square:', 'x': ':regional_indicator_x:', 'o': ':regional_indicator_o:'}
 
-	def create_board_message(self, game):
+	def create_board_message(self, board):
 		from math import sqrt
 
-		board_size = len(game.board)
+		board_size = len(board)
 		board_length = sqrt(board_size)
 
 		custom_board = ''
-		for i in range(0, board_size):
-			custom_board += self.__symbols[game.board[i]]
+		for i in range(1, board_size + 1):
+			custom_board += self.__symbols[board[i]]
 
-			if (i + 1) % board_length == 0:
+			if i % board_length == 0:
 				custom_board += '\n'
 
 		return custom_board
@@ -43,15 +43,15 @@ class tictactoe(commands.Cog):
 		if list(filter(lambda game: ctx.author.id in [player.discord_id for player in game.players], current_games)):
 			await ctx.send(embed=create_error_embed(f'{ctx.author.name}, you are already in a tictactoe game.'))
 			return
-
+		
 		if list(filter(lambda game: member.id in [player.discord_id for player in game.players], current_games)):
 			await ctx.send(embed=create_error_embed(f'{member.name} is already in a tictactoe game.'))
 			return
-
+		
 		game = tictactoe_game([discord_player(player('x'), ctx.author), discord_player(player('o'), member)])
 		current_games.append(game)
-
-		await ctx.send(self.create_board_message(game))
+		
+		await ctx.send(self.create_board_message(game.board))
 		await ctx.send(embed=discord.Embed(
             title=f'{game.players[0].discord_name} vs {game.players[1].discord_name}',
             description=f'{game.current_player.discord_name}\'s turn.',
@@ -84,7 +84,7 @@ class tictactoe(commands.Cog):
 			await ctx.send(embed=create_error_embed(f'{e} Please enter another place.'))
 			return
 
-		await ctx.send(self.create_board_message(game))
+		await ctx.send(self.create_board_message(game.board))
 
 		if game.is_winning():
 			await ctx.send(embed=discord.Embed(
