@@ -205,7 +205,11 @@ class music_queue_cog(commands.Cog):
             await ctx.send(embed=create_error_embed('Please enter a valid number.'))
         
         elif isinstance(error, commands.errors.MissingRequiredArgument):
-            await self.jump(ctx, len(self.__server_queues[ctx.guild.id]))
+            await ctx.send(embed=create_error_embed(str(error)))
+
+    @commands.command(aliases=['TOP'], help='Play the song at the top of the queue.')
+    async def top(self, ctx):
+        await self.jump(ctx, len(self.__server_queues[ctx.guild.id]))
 
     @commands.command(aliases=['STOP'], help='Stop the queue.')
     async def stop(self, ctx):
