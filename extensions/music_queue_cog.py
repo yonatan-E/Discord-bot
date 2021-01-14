@@ -133,7 +133,7 @@ class music_queue_cog(commands.Cog):
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
         elif bot_voice_client.channel.id != member_voice_status.channel.id:
             await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
-        elif bot_voice_client.is_connected():
+        elif bot_voice_client.is_playing() or bot_voice_client.is_paused():
             song_queue = self.__server_queues[ctx.guild.id]
 
             if not song_queue.index in range(0, len(song_queue)):
@@ -159,7 +159,7 @@ class music_queue_cog(commands.Cog):
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
         elif bot_voice_client.channel.id != member_voice_status.channel.id:
             await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
-        elif bot_voice_client.is_connected():
+        elif bot_voice_client.is_playing() or bot_voice_client.is_paused():
             song_queue = self.__server_queues[ctx.guild.id]
 
             if not song_queue.index - 2 in range(0, len(song_queue)):
@@ -186,7 +186,7 @@ class music_queue_cog(commands.Cog):
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
         elif bot_voice_client.channel.id != member_voice_status.channel.id:
             await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
-        elif bot_voice_client.is_connected():
+        elif bot_voice_client.is_playing() or bot_voice_client.is_paused():
             song_queue = self.__server_queues[ctx.guild.id]
 
             if not place - 1 in range(0, len(song_queue)):
@@ -225,7 +225,7 @@ class music_queue_cog(commands.Cog):
             await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
         elif bot_voice_client.channel.id != member_voice_status.channel.id:
             await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
-        elif bot_voice_client.is_connected():
+        else:
             try:
                 song_queue = self.__server_queues[ctx.guild.id]
                 song_queue.index = -1
@@ -243,7 +243,7 @@ class music_queue_cog(commands.Cog):
         if await self.stop(ctx):
             self.__server_queues[ctx.guild.id] = music_queue()
 
-    @commands.command(aliases=['QUEUE'], help='Show the queue.')
+    @commands.command(aliases=['QUEUE', 'q', 'Q'], help='Show the queue.')
     async def queue(self, ctx):
         if ctx.guild.id not in self.__server_queues or not self.__server_queues[ctx.guild.id]:
             description = f'{self.__bot.user.name} queue is empty right now.'
