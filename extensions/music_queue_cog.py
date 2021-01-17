@@ -145,7 +145,7 @@ class music_queue_cog(commands.Cog):
                 
                 bot_voice_client.stop()
 
-    @commands.command(aliases=['PREV'], help='Play the prev song from the queue.')
+    @commands.command(aliases=['PREV', 'back', 'BACK', 'b', 'B'], help='Play the prev song from the queue.')
     async def prev(self, ctx):
         member_voice_status = ctx.author.voice
 
