@@ -10,6 +10,10 @@ class music_queue(list):
         self.append(title)
         self.__song_urls.append(url)
 
+    def __delitem__(self, index):
+        super().__delitem__(index)
+        self.__song_urls.__delitem__(index)
+
     @property
     def title(self):
         if self.index not in range(0, len(self)):

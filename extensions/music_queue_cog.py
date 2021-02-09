@@ -41,8 +41,16 @@ class music_queue_cog(commands.Cog):
 
         title, url = self.__yt_searcher.search(name)
 
-        if title not in song_queue:
-            song_queue[title] = url
+        if title in song_queue:
+            prev_index = list.index(song_queue, title)
+
+            if prev_index != song_queue.index - 1:
+                del song_queue[prev_index]
+
+                if prev_index < song_queue.index - 1:
+                    song_queue.index = song_queue.index - 1
+
+        song_queue[title] = url
 
         bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
         
@@ -190,7 +198,7 @@ class music_queue_cog(commands.Cog):
             song_queue = self.__server_queues[ctx.guild.id]
 
             if not place - 1 in range(0, len(song_queue)):
-                await ctx.send(embed=create_error_embed('There specified place is not in the queue.'))
+                await ctx.send(embed=create_error_embed('The specified place is not in the queue.'))
             else:
                 song_queue.index = place - 1
                 await ctx.send(embed=discord.Embed(
@@ -210,6 +218,41 @@ class music_queue_cog(commands.Cog):
     @commands.command(aliases=['TOP'], help='Play the song at the top of the queue.')
     async def top(self, ctx):
         await self.jump(ctx, len(self.__server_queues[ctx.guild.id]))
+
+    @commands.command(aliases=['REMOVE'], help='Remove the song in the specified place from the queue.')
+    async def remove(self, ctx, place: int):
+        member_voice_status = ctx.author.voice
+
+        if not member_voice_status:
+            await ctx.send(embed=create_error_embed('You have to connect to voice channel before you can do this command.'))
+            return
+
+        bot_voice_client = get(self.__bot.voice_clients, guild=ctx.guild)
+
+        if not bot_voice_client:
+            await ctx.send(embed=create_error_embed(f'{self.__bot.user.name} is not connected to a voice channel.'))
+        elif bot_voice_client.channel.id != member_voice_status.channel.id:
+            await ctx.send(embed=create_error_embed(f'You have to be in the voice channel of {self.__bot.user.name} to do this command.'))
+        elif bot_voice_client.is_playing() or bot_voice_client.is_paused():
+            song_queue = self.__server_queues[ctx.guild.id]
+
+            if song_queue.index == place:
+                await ctx.send(embed=create_error_embed('Can\'t remove a song while playing it.'))
+            elif not place - 1 in range(0, len(song_queue)):
+                await ctx.send(embed=create_error_embed('The specified place is not in the queue.'))
+            else:
+                del song_queue[place - 1]
+
+                if place < song_queue.index:
+                    song_queue.index = song_queue.index - 1
+
+    @remove.error
+    async def remove_error(self, ctx, error):
+        if isinstance(error, commands.errors.BadArgument):
+            await ctx.send(embed=create_error_embed('Please enter a valid number.'))
+        
+        elif isinstance(error, commands.errors.MissingRequiredArgument):
+            await ctx.send(embed=create_error_embed(str(error)))
 
     @commands.command(aliases=['STOP'], help='Stop the queue.')
     async def stop(self, ctx):
