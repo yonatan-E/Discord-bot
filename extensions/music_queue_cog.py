@@ -254,6 +254,10 @@ class music_queue_cog(commands.Cog):
         elif isinstance(error, commands.errors.MissingRequiredArgument):
             await ctx.send(embed=create_error_embed(str(error)))
 
+    @commands.command(aliases=['POP'], help='Remove the song at the top of the queue.')
+    async def pop(self, ctx):
+        await self.remove(ctx, len(self.__server_queues[ctx.guild.id]))
+
     @commands.command(aliases=['STOP'], help='Stop the queue.')
     async def stop(self, ctx):
         member_voice_status = ctx.author.voice
