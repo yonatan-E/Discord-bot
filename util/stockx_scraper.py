@@ -30,11 +30,11 @@ class stockx_page_scraper:
 
 		details['image-url'] = soup.find('img', attrs={'data-testid' : 'product-detail-image'})['src']
 
-		details['sizes'] = {}
+		details['prices'] = {}
 		for item in soup.find_all('div', class_='inset css-8atqhb'):
 			size = item.find('div', class_='title').text[3:]
 			price = item.find('div', class_='subtitle').text
-			details['sizes'][size] = price
+			details['prices'][size] = price
 
 		return details
 
