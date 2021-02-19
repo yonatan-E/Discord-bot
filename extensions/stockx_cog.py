@@ -7,7 +7,7 @@ from util.stockx_scraper import (stockx_scraper, stockx_page_finder, stockx_page
 class stockx_cog(commands.Cog):
 
     qualified_name = 'stockx'
-    description = 'The commands of stockx scraping.'
+    description = 'The commands of getting information from stockx.'
 
     def __init__(self, bot):
         self.__bot = bot
@@ -20,18 +20,18 @@ class stockx_cog(commands.Cog):
             colour=discord.Colour.blue()))
 
         scraper = stockx_scraper(stockx_page_finder(), stockx_page_scraper())
-        details = scraper.get_product_info(product)
+        product_json = scraper.get_product_json(product)
 
         embed=discord.Embed(
             title="StockX product information",
-            description=details['product-name'])
+            description=product_json['product-name'])
 
-        embed.set_thumbnail(url=details['image-url'])
-        embed.add_field(name='Hightest bid', value=details['highest-bid'], inline=True)
-        embed.add_field(name='Lowest bid', value=details['lowest-bid'], inline=True)
-        embed.add_field(name='Last sale', value=details['last-sale'], inline=True)
-        embed.add_field(name='Retail price', value=details['retail-price'], inline=True)
-        embed.add_field(name='Release date', value=details['release-date'], inline=True)
+        embed.set_thumbnail(url=product_json['image-url'])
+        embed.add_field(name='Hightest bid', value=product_json['highest-bid'], inline=True)
+        embed.add_field(name='Lowest bid', value=product_json['lowest-bid'], inline=True)
+        embed.add_field(name='Last sale', value=product_json['last-sale'], inline=True)
+        embed.add_field(name='Retail price', value=product_json['retail-price'], inline=True)
+        embed.add_field(name='Release date', value=product_json['release-date'], inline=True)
 
         await ctx.send(embed=embed)
 
