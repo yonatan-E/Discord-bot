@@ -2,7 +2,7 @@ import discord
 
 import util.tictactoe.player
 
-class discord_player:
+class discord_player(player):
 
 	def __init__(self, player, member):
 		self.__player = player
