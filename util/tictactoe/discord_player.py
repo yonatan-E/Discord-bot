@@ -1,6 +1,6 @@
 import discord
 
-import util.tictactoe.player
+from util.tictactoe.player import player
 
 class discord_player(player):
 
