@@ -13,5 +13,5 @@ The bot contains features from the next categories:
 Run the bot using the command ```python3 bot.py <discord_bot_token>```, where ```<discord_bot_token>``` is the token of the discord bot application in your discord developer account.  
 For running the bot you need to have the following python3 packages:  
 ```discord```  
-```youtube_dl``` for searching songs in youtube
+```youtube_dl``` for searching songs in youtube  
 ```selenium``` and ```beautifulsoup``` for scraping StockX  
